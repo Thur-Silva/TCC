@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "GOTO",
+    "slug": "GOTO",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/Logo&Title.png",
+    "scheme": "goto",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+        "extra": {
+      "EXPO_PUBLIC_GEOPIFY_API_KEY": "ff892bc08be34cdeafde385fa815848e"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/Logo&Title.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "server",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+
+     [ "expo-router", {"origin": "https://uber.com/"} ],
+
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#2f80ed"
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
