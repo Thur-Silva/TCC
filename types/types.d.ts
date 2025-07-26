@@ -172,3 +172,35 @@ declare interface DriverCardProps {
     selected: number;
     setSelected: () => void;
 }
+
+export interface Chat {
+  id: string;
+  partnerName: string;
+  partnerProfileImg: string;
+  lastMessage: string;
+  lastMessageAt: string; // ISO string ou Date
+}
+
+export interface Message {
+  id: string;
+  sender_id: string; // ou number, dependendo do DB
+  sender_name: string;
+  message: string;
+  sent_at: string; // ISO string ou Date
+  profile_img: string;
+}
+
+export interface ChatParticipant {
+  id: string;
+  chat_id: string;
+  user_id: number;
+  joined_at: string; // ISO string ou Date
+}
+
+export interface User {
+  id: number | string;
+  name: string;
+  email?: string;
+  profile_img?: string;
+  clerk_id?: string;
+}

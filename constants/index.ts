@@ -1,9 +1,12 @@
 import arrowDown from "@/assets/icons/arrow-down.png";
 import arrowUp from "@/assets/icons/arrow-up.png";
 import backArrow from "@/assets/icons/back-arrow.png";
+import blueCloud from "@/assets/icons/blue-cloud.png";
 import chat from "@/assets/icons/chat.png";
 import checkmark from "@/assets/icons/check.png";
 import close from "@/assets/icons/close.png";
+import darkCloud from "@/assets/icons/darkCloud.png";
+import defaultUser from "@/assets/icons/defaultUser.png";
 import dollar from "@/assets/icons/dollar.png";
 import email from "@/assets/icons/email.png";
 import eyecross from "@/assets/icons/eyecross.png";
@@ -15,11 +18,13 @@ import LogoTitle from "@/assets/icons/Logo&Title.png";
 import Logo from "@/assets/icons/LogoOnly.png";
 import map from "@/assets/icons/map.png";
 import marker from "@/assets/icons/marker.png";
+import noMessages from "@/assets/icons/noMessages.png";
 import out from "@/assets/icons/out.png";
 import person from "@/assets/icons/person.png";
 import pin from "@/assets/icons/pin.png";
 import point from "@/assets/icons/point.png";
 import profile from "@/assets/icons/profile.png";
+import question from "@/assets/icons/question.png";
 import search from "@/assets/icons/search.png";
 import selectedMarker from "@/assets/icons/selected-marker.png";
 import star from "@/assets/icons/star.png";
@@ -41,6 +46,7 @@ import signUpCar from "@/assets/images/signup-car.png";
 import simpleBrownCar from "@/assets/images/simpleBrownCar.png";
 
 
+
 export const images = {
     simpleBrownCar,
     BrownCar,
@@ -59,6 +65,12 @@ export const images = {
 };
 
 export const icons = {
+    question,
+    defaultUser,
+    bike,
+    noMessages,
+    darkCloud,
+    blueCloud,
     Logo,
     LogoTitle,
     arrowDown,
