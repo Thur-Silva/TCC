@@ -227,7 +227,7 @@ export default function ProfileLayout({
         title='Deseja salvar as alterações?'
         errorMessage='Suas mudanças serão atualizadas no seu perfil.'
         onClose={() => setShowSaveModal(false)}
-        icon={icons.warning}
+        icon={icons.question}
         iconStyle='w-[150px] h-[150px]'
         secondOption
         onFirstButtonPress={() => {

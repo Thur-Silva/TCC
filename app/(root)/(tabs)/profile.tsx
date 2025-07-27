@@ -1,11 +1,17 @@
-import { Text } from "react-native";
+import ProfileLayout from "@/components/profilesLayout";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Profile = () => {
     return(
         <SafeAreaView>
-            <Text className="text-red-500">
-                Perfil
-            </Text>
+            <ProfileLayout
+                userName="John Doe"
+                userEmail=""
+                userImageUrl="https://example.com/image.jpg"
+                userBirthDate="1990-01-01"
+                userCountry="USA"
+                onSave={() => {}}
+                userGender=""
+            />
         </SafeAreaView>
     );
 };

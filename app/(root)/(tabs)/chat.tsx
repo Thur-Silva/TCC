@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import ErrorModal from '@/components/ErrorModal';
 
-// Simulação do user autenticado (substituir contexto/clerk real)
+// Simulação do user autenticado (substituir por contexto do Clerk se disponível)
 function useAuthUser() {
   return { id: 1 };
 }
@@ -27,7 +27,7 @@ export default function ChatList() {
 
   useEffect(() => {
     setLoading(true);
-    fetchAPI(`/(api)/(chats)?userId=${userId}`)
+  fetchAPI(`/api/chats?userId=${userId}`)
       .then((res: { data: Chat[] }) => {
         setChats(res.data);
       })
@@ -46,7 +46,12 @@ export default function ChatList() {
     return (
       <ChatsLayout
         item={item}
-        onPress={() => router.push(`/(root)/${item.id}/conversation`)}
+        onPress={() =>
+          router.push({
+            pathname: '/[chatId]/messages',
+            params: { chatId: item.id },
+          })
+        }
       />
     );
   }
@@ -66,6 +71,8 @@ export default function ChatList() {
         errorMessage={errorMessage}
         onClose={onCloseError}
       />
+
     </SafeAreaView>
+
   );
 }

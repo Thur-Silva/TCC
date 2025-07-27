@@ -16,6 +16,8 @@ export async function POST(request: Request) {
       ON CONFLICT (chat_id, user_id) DO NOTHING;
     `;
 
+    console.log(`[POST chat_participant] Added user ${userId} to chat ${chatId}`);
+
     return new Response(JSON.stringify({ message: 'Participant added' }), { status: 201 });
   } catch (error: any) {
     console.error('[POST chat_participant]:', error);

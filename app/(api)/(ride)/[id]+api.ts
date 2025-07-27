@@ -3,8 +3,10 @@
 import { neon } from "@neondatabase/serverless"
 
 const sql = neon(process.env.DATABASE_URL!)
+console.log("Ride API initialized with DATABASE_URL:", process.env.DATABASE_URL)
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
+  console.log("Fetching ride with ID:", params.id)
   const rideId = params.id
 
   const result = await sql`SELECT * FROM rides WHERE id = ${rideId}`

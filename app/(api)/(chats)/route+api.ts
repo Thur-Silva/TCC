@@ -2,6 +2,8 @@ import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
 
+console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA :", process.env.DATABASE_URL);
+
 type ChatRow = {
   id: string;
   partner_id: string;
@@ -46,6 +48,8 @@ export async function GET(request: Request) {
   const partners = await sql`
     SELECT id, name, profile_img FROM users WHERE id = ANY(${partnerIds})
   ` as UserRow[];
+
+  console.log(`[GET chats] Fetched ${chats.length} chats for userId: ${userId}`);
 
   const result = chats.map(chat => {
     const partner = partners.find(p => p.id === chat.partner_id);

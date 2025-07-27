@@ -2,7 +2,8 @@
 import { icons } from '@/constants';
 import { formatDate, formatTime } from '@/lib/utils';
 import { Ride } from '@/types/types';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
 export default function RideCard({ ride }: { ride: Ride }) {
   const {
@@ -14,7 +15,11 @@ export default function RideCard({ ride }: { ride: Ride }) {
     payment_status,
   } = ride;
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
+    <TouchableWithoutFeedback onPress={() => setIsOpen(!isOpen)}>
+
     <View style={styles.card}>
       <View style={styles.topRow}>
         <View style={styles.addrCol}>
@@ -33,6 +38,9 @@ export default function RideCard({ ride }: { ride: Ride }) {
         </View>
       </View>
 
+    { isOpen && (
+
+      
       <View style={styles.details}>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Data e Hora</Text>
@@ -45,10 +53,6 @@ export default function RideCard({ ride }: { ride: Ride }) {
           <Text style={styles.value}>
             {driver.first_name} {driver.last_name}
           </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Assentos</Text>
-          <Text style={styles.value}>{driver.car_seats}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Comissão</Text>
@@ -64,7 +68,11 @@ export default function RideCard({ ride }: { ride: Ride }) {
           </Text>
         </View>
       </View>
+    )}
+
     </View>
+    </TouchableWithoutFeedback>
+
   );
 }
 
@@ -72,7 +80,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    marginBottom: 40,
+    marginBottom: 15,
     overflow: 'hidden',
     elevation: 2,
     shadowColor: '#000',
