@@ -4,13 +4,13 @@ import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-    FlatList,
-    Image,
-    Keyboard,
-    Pressable,
-    Text,
-    TouchableOpacity,
-    View
+  FlatList,
+  Image,
+  Keyboard,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -157,7 +157,9 @@ export default function Page() {
         />
       )}
 
-       <HomeHeader onSignOut={handleSignOut} />
+       <HomeHeader
+        showInput={true}
+       />
 
       <FlatList<Ride>
         data={recentRides}

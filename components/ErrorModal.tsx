@@ -22,7 +22,7 @@ const ErrorModal = ({
         <ReactNativeModal
         isVisible={isErrorVisible}
         statusBarTranslucent={true}>
-            <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
+            <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px] justify-center items-center ">
                 <Image source={icon ? icon : images.error} className={`w-[110px] h-[110] mx-auto xy-5 ${iconStyle}`} />
 
                 <Text className="text-3xl font-JakartaExtraBold mb-2 mt-5 text-red-500">{title}</Text>
@@ -32,11 +32,11 @@ const ErrorModal = ({
                 {secondOption && (
                     <CustomButton
                         title="Sim, mudar"
-                        className="w-full mb-5 mt-10"
+                        className="w-full mb-5 mt-10 bg-primary-500"
                         onPress={onFirstButtonPress}
                     />
                 )}
-                <CustomButton title="Fechar" className={`${secondOption ? "" : "mt-10" }`} onPress={onClose}/>
+                <CustomButton title="Fechar" className={`${secondOption ? "" : "mt-10" }`} bgVariant={`${secondOption? "bg-red-500" : "bg-primary-500" }`} onPress={onClose}/>
             </View>
         </ReactNativeModal>
     );  

@@ -43,6 +43,10 @@ declare interface SuccessModalProps{
 
 }
 
+export interface HomeHeaderProps {
+    showInput?:  boolean ;
+}
+
 
 
 declare interface ErrorModalProps {
@@ -98,7 +102,7 @@ declare interface Ride {
 
 declare interface ButtonProps extends TouchableOpacityProps {
     title: string;
-    bgVariant?: "primary" | "secondary" | "danger" | "outline" | "success";
+    bgVariant?: string;
     textVariant?: "primary" | "default" | "secondary" | "danger" | "success";
     IconLeft?: React.ComponentType<any>;
     IconRight?: React.ComponentType<any>;
