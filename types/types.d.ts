@@ -1,4 +1,4 @@
-import { TextInputProps, TouchableOpacityProps, ViewStyle } from "react-native";
+import { ImageSourcePropType, TextInputProps, TouchableOpacityProps, ViewStyle } from "react-native";
 
 declare interface Driver {
     driver_id: number;
@@ -52,6 +52,15 @@ declare interface ErrorModalProps {
     isErrorVisible: boolean;
 
     errorMessage: any;
+
+     icon?: ImageSourcePropType;
+
+     iconStyle?: string;
+     
+     secondOption?: boolean;
+     
+     onFirstButtonPress?: () => void;
+     
 
     onClose: () => void;
 
@@ -188,6 +197,8 @@ export interface Message {
   message: string;
   sent_at: string; // ISO string ou Date
   profile_img: string;
+  status: 'pending' | 'sent' | 'failed';
+  temp_id?: string; // usado para mensagens pendentes antes de serem enviadas
 }
 
 export interface ChatParticipant {

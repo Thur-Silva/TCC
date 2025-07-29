@@ -10,14 +10,7 @@ interface ChatsLayoutProps {
 //TODO: Colocar essa função direto na hora de gerar a img do profile no DB para que assim as imgs não mudem sempre que a page seja atualizada
 
 const getRandomDefaultImage = () => {
-  const images = {
-    womanImageProfile: require('@/assets/images/womanProfile.png'), 
-    manImageProfile: require('@/assets/images/manProfile.png'),  
-    
-  };
-
-  const isWoman = Math.random() < 0.5;
-  return isWoman ? images.womanImageProfile : images.manImageProfile;
+  
 };
 
 export default function ChatsLayout({ item, onPress }: ChatsLayoutProps) {

@@ -28,6 +28,8 @@ export async function GET(request: Request, { params }: { params: { chatId: stri
     ORDER BY m.sent_at
   ` as Message[];
 
+  console.log(`[GET messages] Fetched ${messages.length} messages for chatId: ${chatId}`);
+
   return Response.json({ data: messages });
 }
 
