@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 export default function useMessageSync(chatId?: string, messages: Message[] = []) {
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
+    const unsubscribe = NetInfo.addEventListener((state :any) => {
       if (!state.isConnected || !state.isInternetReachable) return;
 
       const pendings = messages.filter((m) => m.status === 'pending' || m.status === 'failed');
