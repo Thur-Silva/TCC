@@ -35,6 +35,7 @@ import BlueCar from "@/assets/images/blue-car.png";
 import BrownCar from "@/assets/images/brown-car.png";
 import check from "@/assets/images/check.png";
 import error from "@/assets/images/error.png";
+import friends from "@/assets/images/friends.png";
 import getStarted from "@/assets/images/get-started.png";
 import message from "@/assets/images/message.png";
 import noResult from "@/assets/images/no-result.png";
@@ -42,12 +43,15 @@ import notFounded from "@/assets/images/notFounded.png";
 import onboarding1 from "@/assets/images/onboarding1.png";
 import onboarding2 from "@/assets/images/onboarding2.png";
 import onboarding3 from "@/assets/images/onboarding3.png";
+import redMarker from "@/assets/images/redMarker.png";
 import signUpCar from "@/assets/images/signup-car.png";
 import simpleBrownCar from "@/assets/images/simpleBrownCar.png";
 
 
 
 export const images = {
+    redMarker,
+    friends,
     simpleBrownCar,
     BrownCar,
     bike,
@@ -103,24 +107,24 @@ export const icons = {
 export const onboarding = [
     {
         id: 1,
-        title: "Seu próximo destino é mais fácil com GOTO.",
+        title: "Seu destino é fácil aqui.",
         description:
-            "Entre em contato com pessoas dispostas a ajudar alguém.",
-        image: images.onboarding1,
+            "Marque destinos e nós encontraremos uma carona.",
+        image: images.BlueCar,
     },
     {
         id: 2,
-        title: "Melhor maneira de se combinar uma boa ação.",
+        title: "Ao encontro de bons corações.",
         description:
-            "Marque destinos e nós encontraremos uma carona.",
-        image: images.onboarding2,
+            "Auxiliamos-ti na busca por pessoas dispostas a ajudar alguém.",
+        image: images.friends,
     },
     {
         id: 3,
-        title: "GOTO, seu objetivo por aqui.",
+        title: "GOTO,.",
         description:
             "Passe o endereço, sente no carro e vá.",
-        image: images.onboarding3,
+        image: images.redMarker,
     },
 ];
 

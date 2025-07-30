@@ -1,4 +1,5 @@
 import CustomButton from "@/components/CustomButton";
+import HomeHeader from "@/components/HomeHeader";
 import { Link, router } from "expo-router";
 import { useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
@@ -16,6 +17,8 @@ const Onboarding = () => {
 
     return(
         <SafeAreaView className="flex h-full items-center justify-between bg-white">
+
+            <HomeHeader showInput={false}/>
 
             {/*Pular*/}
            <View className="w-full flex justify-end items-end p-5">
@@ -37,12 +40,12 @@ const Onboarding = () => {
             {onboarding.map((item) =>( 
                 <View key={item.id}  className="flex items-center justify-center p-5" >
                     <Image source={item.image}
-                    className="w-full h-[300px]"
+                    className="w-full h-[260px]"
                     resizeMode="contain"
                     />
 
                     <View className="flex flex-row items-center w-full mt-10 justify-center">
-                        <Text className="text-black text-3xl font-bold mx-10 text-center">{item.title}</Text>
+                        <Text className="text-black text-4xl font-bold mx-10 text-center">{item.title}</Text>
                     </View>  
                     
                     <Text className="text-lg font-JakartaSemiBold text-center text-[#858585] mx-10 mt-3">{item.description}</Text>
@@ -55,7 +58,7 @@ const Onboarding = () => {
             onPress={() => 
                 isLastSliide ? router.replace('/(auth)/sign-in')
                 : swiperRef.current?.scrollBy(1)}
-            className="w-11/12 mt-10 mb-5"
+            className="w-[300px] mt-10 mb-5"
             />
            
         </SafeAreaView>

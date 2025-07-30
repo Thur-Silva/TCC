@@ -15,6 +15,8 @@
     "@expo/vector-icons": "^14.1.0",
     "@gorhom/bottom-sheet": "^5.1.6",
     "@neondatabase/serverless": "^1.0.1",
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
@@ -34,7 +36,7 @@
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
-    "lottie-react-native": "^7.2.4",
+    "lottie-react-native": "7.2.2",
     "nativewind": "^4.1.23",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -53,9 +55,7 @@
     "react-native-webview": "13.13.5",
     "stripe": "^18.3.0",
     "swiper": "^11.2.8",
-    "zustand": "^5.0.6",
-    "@react-native-community/netinfo": "11.4.1",
-    "@react-native-async-storage/async-storage": "2.1.2"
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -75,5 +75,4 @@
     "typescript-eslint": "^8.34.1"
   },
   "private": true
-  
 }
