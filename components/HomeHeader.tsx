@@ -14,7 +14,10 @@ import {
   View,
 } from "react-native";
 
-const HomeHeader = ({ showInput }: HomeHeaderProps) => {
+const HomeHeader = ({
+   showInput,
+   globalClassName
+}: HomeHeaderProps) => {
   const router = useRouter();
   const { setDestinationLocation } = useLocationStore();
   const [showAutocomplete, setShowAutocomplete] = useState(true);
@@ -30,6 +33,8 @@ const HomeHeader = ({ showInput }: HomeHeaderProps) => {
 
   return (
     <>
+    <View className={`${globalClassName && globalClassName} w-full`}>
+
       {showAutocomplete && (
         <Pressable
           className="absolute top-0 left-0 right-0 bottom-0 z-10"
@@ -88,6 +93,8 @@ const HomeHeader = ({ showInput }: HomeHeaderProps) => {
             />
           </View>
         )}
+      </View>
+
       </View>
     </>
   );

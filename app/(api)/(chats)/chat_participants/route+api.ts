@@ -1,6 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 
 export async function POST(request: Request) {
+  console.error("Está batendo na [/api]/(chats)/chat_participants/route+api.ts");
   try {
     const body = await request.json();
     const { chatId, userId } = body;

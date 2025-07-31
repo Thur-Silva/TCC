@@ -121,7 +121,7 @@ export const onboarding = [
     },
     {
         id: 3,
-        title: "GOTO,.",
+        title: "Seu destino em sua mão.",
         description:
             "Passe o endereço, sente no carro e vá.",
         image: images.redMarker,

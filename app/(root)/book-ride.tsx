@@ -6,7 +6,7 @@ import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
 import { formatTime } from "@/lib/utils";
 import { useDriveStore, useLocationStore } from "@/store";
-import { StripeProvider } from '@stripe/stripe-react-native';
+// import { StripeProvider } from '@stripe/stripe-react-native';
 import { useEffect, useState } from "react";
 
 
@@ -33,14 +33,17 @@ const BookRide = () => {
         (driver) => +driver.id === selectedDriver,
     )[0];
 
-
-
-    return (
-        <StripeProvider
+         {/*
+         <StripeProvider
         publishableKey={publicKey!}
         merchantIdentifier="merchant.identifier"
         urlScheme=""
         >
+        */}  
+
+
+
+    return (
         <RideLayout title="Descubra mais">
             <>
                 <Text className="text-xl font-JakartaSemiBold mb-3">
@@ -116,7 +119,7 @@ const BookRide = () => {
                 />
             </>
         </RideLayout>
-         </StripeProvider>
+         // </StripeProvider>
     );
 };
 

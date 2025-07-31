@@ -1,15 +1,17 @@
 import CustomButton from "@/components/CustomButton";
+import DecorationClouds from "@/components/decorationClouds";
 import ErrorModal from "@/components/ErrorModal";
+import HomeHeader from "@/components/HomeHeader";
 import InputField from "@/components/InputField";
 import OAuth from "@/components/OAtuh";
 import SuccessModal from "@/components/SuccessModal";
-import { icons, images } from "@/constants";
+import { icons } from "@/constants";
 import { fetchAPI } from "@/lib/fecth";
 import { useSignUp } from '@clerk/clerk-expo';
 import { Link, useRouter } from 'expo-router';
 import * as React from 'react';
 import { useState } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { ReactNativeModal } from "react-native-modal";
 
 
@@ -108,6 +110,17 @@ const SingUp = () => {
         })
       }
         } catch (err: any) {
+            const errorMessage = err?.message || err?.toString?.() || ''
+            const isUserAlreadyExists =
+            errorMessage.includes('duplicate key') ||
+            errorMessage.includes('users_pkey') ||
+            err?.code === '23505'
+
+          if (!isUserAlreadyExists) {
+            console.error('Erro inesperado ao criar usuário:', err)
+            throw err
+          }
+          
             setVerification({
                 ...verification,
                 state:'failed',
@@ -118,15 +131,15 @@ const SingUp = () => {
 
     return(
         <ScrollView className="bg-white flex-1">
+
+          <HomeHeader showInput={false} globalClassName="pt-10 mb-20" />
             <View className="bg-white flex-1">
                 <View className="relative w-full h-[250px]">
-                    <Image source={images.signUpCar}
-                    className="z-0 w-full h-[250px]"
-                    />
-
-                    <Text className="text-3xl font-JakartaSemiBold absolute bottom-5 left-5 ">
-                        Crie sua conta
-                    </Text>
+                    <View className="">
+                        <Text className="text-3xl font-JakartaSemiBold absolute bottom-5 left-5 ">
+                            Crie sua conta
+                        </Text>
+                    </View>
 
                     <View className="p-5">
                         <InputField
@@ -227,6 +240,8 @@ const SingUp = () => {
                 link={"/(root)/(tabs)/home"}
             />
             </View>
+
+            <DecorationClouds className="mt-12"/>
         </ScrollView>
     );
 };

@@ -45,6 +45,7 @@ declare interface SuccessModalProps{
 
 export interface HomeHeaderProps {
     showInput?:  boolean ;
+    globalClassName?: string;
 }
 
 

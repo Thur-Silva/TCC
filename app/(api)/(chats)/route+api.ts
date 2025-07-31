@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       WHERE chat_id = cp.chat_id
       ORDER BY sent_at DESC LIMIT 1
     ) AS m2 ON true
-    GROUP BY cp.chat_id, cp2.user_id, m2.message, m2.sent_at
+    GROUP BY cp.chat_id, cp2.user_id, cp.user_id, m2.message, m2.sent_at
     ORDER BY m2.sent_at DESC
   ` as ChatRow[];
 

@@ -71,6 +71,18 @@ const Layout = () => (
         />
 
         <Tabs.Screen
+        name='config'
+        options={{
+          title:"Config",
+          headerShown: false,
+          tabBarIcon: ({ focused }: {focused: boolean}) =>(
+             <TabIcon focused={focused}
+             source={icons.lock}/>
+          )
+        }}
+        />
+
+        <Tabs.Screen
         name='chat'
         options={{
           title:"Chat",

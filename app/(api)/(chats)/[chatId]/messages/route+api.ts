@@ -12,6 +12,7 @@ type Message = {
 };
 
 export async function GET(request: Request, { params }: { params: { chatId: string } }) {
+  console.error("Está batendo na [/api]/(chats)/[chatId]/messages/route+api.ts");
   const chatId = params.chatId;
 
   const messages = await sql`

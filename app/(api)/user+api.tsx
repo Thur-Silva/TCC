@@ -1,7 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 
 export async function POST(request: Request) {
-  console.log("Initializing user API with DATABASE_URL:", process.env.DATABASE_URL);  
+  console.error("Está batendo na [/api]/(user)+api.ts");  
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
     const { name, email, clerkId } = await request.json();

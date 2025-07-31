@@ -1,12 +1,14 @@
 import CustomButton from "@/components/CustomButton";
+import DecorationClouds from "@/components/decorationClouds";
 import ErrorModal from "@/components/ErrorModal";
+import HomeHeader from "@/components/HomeHeader";
 import InputField from "@/components/InputField";
 import OAuth from "@/components/OAtuh";
-import { icons, images } from "@/constants";
+import { icons } from "@/constants";
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 
 
@@ -53,15 +55,15 @@ const SignIn = () => {
     }, [isLoaded, form.email, form.password]);
     return(
         <ScrollView className="bg-white flex-1">
+
+            <HomeHeader showInput={false} globalClassName="pt-10 mb-20" />
             <View className="bg-white flex-1">
                 <View className="relative w-full h-[250px]">
-                    <Image source={images.signUpCar}
-                    className="z-0 w-full h-[250px]"
-                    />
-
-                    <Text className="text-3xl font-JakartaSemiBold absolute bottom-5 left-5 ">
-                        Entre na sua conta
-                    </Text>
+                    <View className="">
+                        <Text className="text-3xl font-JakartaSemiBold absolute bottom-5 left-5 ">
+                            Entre na sua conta
+                        </Text>
+                    </View>
 
                     <View className="p-5">
                         <InputField
@@ -104,6 +106,8 @@ const SignIn = () => {
                     </View>
                 </View>
             </View>
+
+            <DecorationClouds/>
         </ScrollView>
     );
 };

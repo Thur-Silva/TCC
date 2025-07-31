@@ -29,7 +29,7 @@ export default function ChatList() {
 
   useEffect(() => {
     setLoading(true);
-  fetchAPI(`/api/chats?userId=${userId}`)
+  fetchAPI(`/(api)/(chats)/route?userId=${userId}`)
       .then((res: { data: Chat[] }) => {
         setChats(res.data);
       })
