@@ -1,11 +1,14 @@
 import ProfileLayout from "@/components/profilesLayout";
+import { icons } from '@/constants';
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
 
 const IndividualProfile = () => {
-  const { partnerId } = useLocalSearchParams<{ partnerId: string }>();
-  console.warn("ID do usuário recebido:", partnerId);
+  // MODIFICAÇÃO: Extraímos 'clerkId' e 'partnerId' dos parâmetros locais.
+  const { partnerId, clerkId } = useLocalSearchParams<{ partnerId: string, clerkId: string }>();
+  console.warn("IDs do usuário recebidos:", { partnerId, clerkId });
+
   const [userProfile, setUserProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -17,8 +20,8 @@ const IndividualProfile = () => {
       setIsError(false);
       setUserProfile(null);
 
-      // Agora a verificação usa o novo nome da propriedade
-      if (!partnerId) {
+      // MODIFICAÇÃO: A verificação agora usa 'clerkId'.
+      if (!clerkId) {
         setErrorMessage("ID do perfil não foi fornecido.");
         setIsError(true);
         setIsLoading(false);
@@ -26,9 +29,9 @@ const IndividualProfile = () => {
       }
 
       try {
-        // A chamada da API também foi ajustada para usar o novo nome
-        console.warn("Buscando perfil do usuário com ID:", partnerId);
-        const response = await fetch(`/(api)/user?clerkId=${partnerId}`);
+        // MODIFICAÇÃO: A chamada da API agora usa o 'clerkId' extraído.
+        console.warn("Buscando perfil do usuário com clerkId:", clerkId);
+        const response = await fetch(`/(api)/user?clerkId=${clerkId}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -51,7 +54,7 @@ const IndividualProfile = () => {
       }
     };
     fetchUserProfile();
-  }, [partnerId]); // O useEffect agora depende de 'userId'
+  }, [clerkId]); // MODIFICAÇÃO: O useEffect agora depende de 'clerkId'.
 
   if (isLoading) {
     return (
@@ -79,7 +82,9 @@ const IndividualProfile = () => {
     <SafeAreaView className="flex-1 bg-blue-50">
       <ProfileLayout
         userEmail={userProfile.email}
-        userImageUrl={userProfile.user_image_url} 
+        // CORREÇÃO: Usamos o operador OR (||) para fornecer um fallback.
+        // Se userProfile.user_image_url não existir, icons.defaultUser será usado.
+        userImageUrl={userProfile.user_image_url || icons.defaultUser} 
         userName={userProfile.name}
         userBirthDate="Não informado" 
         userCountry="Não informado"

@@ -79,6 +79,7 @@ export default function MessageScreen({}: MessageProps) {
     const interlocutorUserId = (params.userId as string) ?? chatId;
     const currentUserId = params.currentUserId;
     const partnerId = params.partnerId as number | string;
+    const clerk_id = params.clerkId as string | undefined;
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState('');
@@ -186,13 +187,16 @@ export default function MessageScreen({}: MessageProps) {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() =>{
-                            router.push({
-                                pathname: '/individualProfile',
-                                params: { partnerId: 1 },
-                            })
-                        }
-                        }
+                        onPress={() => {
+                            if (partnerId) {
+                                router.push({
+                                    pathname: '/individualProfile',
+                                    params: { partnerId: partnerId, clerkId: clerk_id },
+                                });
+                            } else {
+                                console.warn("Navegação cancelada: partnerId não encontrado.");
+                            }
+                        }}
                         className="flex-row items-center flex-1"
                     >
                         <Image
@@ -211,12 +215,16 @@ export default function MessageScreen({}: MessageProps) {
 
                 {/* Ícone de perfil para navegação */}
                 <TouchableOpacity
-                    onPress={() =>
-                        router.push({
-                            pathname: '/individualProfile',
-                            params: { userId: interlocutorUserId },
-                        })
-                    }
+                    onPress={() => {
+                        if (partnerId) {
+                            router.push({
+                                pathname: '/individualProfile',
+                                params: { partnerId: partnerId, clerkId: clerk_id },
+                            });
+                        } else {
+                            console.warn("Navegação cancelada: partnerId não encontrado.");
+                        }
+                    }}
                     className="p-2 ml-2"
                     accessibilityRole="button"
                 >

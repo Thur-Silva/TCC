@@ -69,7 +69,6 @@ export default function ChatList() {
     setErrorVisible(false);
   }
 
-  // Lógica de filtro para a busca
   const filteredChats = chats.filter(chat =>
     chat.partnerName.toLowerCase().includes(searchText.toLowerCase())
   );
@@ -85,8 +84,10 @@ export default function ChatList() {
               chatId: item.id,
               currentUserId: userId.toString(),
               name: item.partnerName,
-              photoUrl: item.partnerProfileImg,
+              // MODIFICAÇÃO: A URL agora é enviada apenas se existir, caso contrário envia uma string vazia.
+              photoUrl: item.partnerProfileImg || "",
               partnerId: item.partnerId,
+              clerkId: item.partnerClerkId,
             },
           })
         }
@@ -130,6 +131,7 @@ export default function ChatList() {
             ListEmptyComponent={
               <View className="flex-1 items-center justify-center mt-[30%]">
                 <Image
+                  // MODIFICAÇÃO: Usando a forma correta para carregar uma imagem local
                   source={icons.noMessages}
                   className="w-[200px] h-[200px] mb-4"
                   resizeMode="contain"

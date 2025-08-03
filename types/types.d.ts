@@ -1,4 +1,4 @@
-import { ImageSourcePropType, TextInputProps, TouchableOpacityProps, ViewStyle } from "react-native";
+import { TextInputProps, TouchableOpacityProps, ViewStyle } from "react-native";
 
 declare interface Driver {
     driver_id: number;
@@ -8,6 +8,28 @@ declare interface Driver {
     car_image_url: string;
     car_seats: number;
     rating: number;
+}
+
+// Adicione esta interface ao seu arquivo de tipos existente
+export interface DriverRegistrationData {
+    cpf: string;
+    rg: string;
+    contactPhone: string;
+    emergencyPhone: string;
+    gender: string;
+    bio: string;
+    cnhInfo: string;
+    cnhValidity: string; // New field
+    hasEar: boolean; // New field
+    carBrand: string;
+    carModel: string;
+    carPlate: string;
+    carColor: string;
+    carYear: string;
+    profilePictureUri: string;
+    cnhPictureUri: string;
+    crlvPictureUri: string; // New field
+    criminalRecordUri: string; // New field
 }
 
 declare interface MarkerData {
@@ -50,28 +72,21 @@ export interface HomeHeaderProps {
 
 
 
-declare interface ErrorModalProps {
-
-    title?: string;
-
-    isErrorVisible: boolean;
-
-    errorMessage: any;
-
-     icon?: ImageSourcePropType;
-
-     firstButtonText?: string;
-
-     iconStyle?: string;
-     
-     secondOption?: boolean;
-     
-     onFirstButtonPress?: () => void;
-     
-
-    onClose: () => void;
-
+export interface ErrorModalProps {
+    title?: string | undefined;
+    isErrorVisible: boolean;
+    errorMessage: string;
+    icon?: any;
+    iconStyle?: string;
+    secondOption?: boolean;
+    firstButtonText?: string;
+    onFirstButtonPress?: () => void;
+    // ADIÇÃO: Novas propriedades para o segundo botão
+    secondButtonText?: string;
+    onSecondButtonPress?: () => void;
+    onClose: () => void;
 }
+
 
 declare interface MapProps {
     destinationLatitude?: number;
@@ -104,7 +119,7 @@ declare interface Ride {
 
 
 declare interface ButtonProps extends TouchableOpacityProps {
-    title: string;
+    title: string  | React.ReactNode;
     bgVariant?: string;
      textClassName?: string;
     textVariant?: "primary" | "default" | "secondary" | "danger" | "success";
@@ -197,6 +212,7 @@ export interface Chat {
   partnerProfileImg: string;
   lastMessage: string;
   lastMessageAt: string; // ISO string ou Date
+    partnerClerkId?: string; // opcional, se necessário
 }
 
 export interface Message {

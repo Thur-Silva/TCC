@@ -12,7 +12,7 @@ type Message = {
 };
 
 export async function GET(request: Request) {
-  console.error("Está batendo na [/api]/(chats)/[chatId]/messages/route+api.ts");
+  console.warn("Está batendo na [/api]/(chats)/[chatId]/messages/route+api.ts");
 
   const url = new URL(request.url);
   const chatId = url.searchParams.get("chatId");

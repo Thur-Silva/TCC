@@ -96,7 +96,6 @@ export default function ConfigScreen() {
     const { signOut } = useAuth();
     const { user } = useUser();
     
-    // Removendo estados e funções de módulos ausentes
     const [enableDriverMode, setEnableDriverMode] = useState(false);
     const [messageSound, setMessageSound] = useState(true);
     const [syncMessages, setSyncMessages] = useState(true);
@@ -104,6 +103,9 @@ export default function ConfigScreen() {
 
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [showClearCacheModal, setShowClearCacheModal] = useState(false);
+    // ADIÇÃO: Novo estado para o modal de confirmação do modo motorista
+    const [showDriverModeModal, setShowDriverModeModal] = useState(false);
+    
     const [storageUsage, setStorageUsage] = useState('0 KB');
     const [isOnline, setIsOnline] = useState(true);
 
@@ -112,7 +114,6 @@ export default function ConfigScreen() {
             setIsOnline(state.isConnected !== null ? state.isConnected : false);
         });
 
-        // A simulação de uso do cache agora é um valor estático, já que as funções de cache não existem
         setStorageUsage('128 KB');
 
         return () => unsubscribe();
@@ -122,12 +123,13 @@ export default function ConfigScreen() {
         setShowLogoutModal(true);
     };
 
-    const confirmLogout = () => {
-        signOut();
-            router.replace('/sign-in'); // é importante usar o replace 2x para evitar que o usuário volte para a tela de home após sair
-          setTimeout(() => {
-            router.replace('/sign-in');
-        }, 100);
+    const confirmLogout = async () => {
+       try {
+        await signOut();
+        router.replace('/sign-in');
+    } catch (error) {
+        console.error("Ocorreu um erro durante o logout:", error);
+    }
     };
 
     const handleClearCache = async () => {
@@ -135,11 +137,28 @@ export default function ConfigScreen() {
     };
 
     const confirmClearCache = async () => {
-        // As funções de cache foram removidas, então esta função não faz nada.
-        // setStorageUsage('0 KB'); // Simula a limpeza
         setShowClearCacheModal(false);
     }
     
+    // ADIÇÃO: Lógica para o modo motorista
+    const handleDriverModeChange = (value: boolean) => {
+        if (value) {
+            // Se o utilizador tentar ativar o modo, mostre o modal de confirmação
+            setShowDriverModeModal(true);
+        } else {
+            // Se o utilizador desativar, faça a mudança de estado diretamente
+            setEnableDriverMode(false);
+            // Poderíamos adicionar lógica aqui para reverter o perfil para passageiro, se necessário
+        }
+    };
+
+    const confirmDriverMode = () => {
+        // Ativa o modo motorista e navega para a tela de cadastro
+        setEnableDriverMode(true);
+        setShowDriverModeModal(false);
+        router.push({ pathname: '/(root)/(configTabs)/driverRegistration' });
+    }
+
     return (
         <SafeAreaView className="flex-1 bg-white mb-[100px]">
             <HomeHeader showInput={true} globalClassName='mt-14' />
@@ -182,9 +201,10 @@ export default function ConfigScreen() {
                     description="Alterna entre perfil de passageiro e motorista."
                     iconName="car-sport-outline"
                     value={enableDriverMode}
-                    onValueChange={setEnableDriverMode}
+                    // ALTERAÇÃO: Chama a nova função de ativação
+                    onValueChange={handleDriverModeChange}
                 />
-                 <ConfigSwitch
+                <ConfigSwitch
                     label="Sons de Mensagem"
                     description="Reproduz sons para novas mensagens."
                     iconName="volume-medium-outline"
@@ -200,7 +220,7 @@ export default function ConfigScreen() {
                 />
                 <ConfigItem
                     label="Limpar Cache de Chats"
-                    onPress={() => {}} // Função removida
+                    onPress={() => {}}
                     iconName="chatbox-ellipses-outline"
                 />
 
@@ -247,17 +267,17 @@ export default function ConfigScreen() {
                 <Text className="text-2xl font-JakartaBold mt-8 mb-4 text-[#1456a7]">Suporte</Text>
                 <ConfigItem
                     label="Fale Conosco"
-                    onPress={() => {}} // Lógica para abrir e-mail ou chat de suporte
+                    onPress={() => {}}
                     iconName="help-circle-outline"
                 />
                 <ConfigItem
                     label="Política de Privacidade"
-                    onPress={() => {}} // Lógica para abrir link
+                    onPress={() => {}}
                     iconName="document-text-outline"
                 />
                 <ConfigItem
                     label="Termos de Uso"
-                    onPress={() => {}} // Lógica para abrir link
+                    onPress={() => {}}
                     iconName="reader-outline"
                 />
             </ScrollView>
@@ -279,6 +299,18 @@ export default function ConfigScreen() {
                 onClose={() => setShowClearCacheModal(false)}
                 firstButtonText="Limpar Cache"
                 onFirstButtonPress={confirmClearCache}
+                secondOption
+            />
+            {/* ADIÇÃO: Novo modal para o modo motorista */}
+            <ErrorModal
+                isErrorVisible={showDriverModeModal}
+                title="Ativar Modo Motorista?"
+                errorMessage="Para ativar o modo motorista, é necessário fornecer algumas informações adicionais e do seu veículo."
+                onClose={() => setShowDriverModeModal(false)}
+                firstButtonText="Continuar"
+                onFirstButtonPress={confirmDriverMode}
+                secondButtonText="Cancelar"
+                onSecondButtonPress={() => setShowDriverModeModal(false)}
                 secondOption
             />
         </SafeAreaView>

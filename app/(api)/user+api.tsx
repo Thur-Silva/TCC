@@ -1,10 +1,11 @@
 import { neon } from '@neondatabase/serverless';
 
 export async function POST(request: Request) {
-  console.error("Está batendo na [/api]/(user)+api.ts");  
+  console.error("Está batendo na [/api]/(user)+api.ts");
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const { name, email, clerkId } = await request.json();
+    // CORREÇÃO: Adicionamos imageUrl como uma propriedade opcional na requisição.
+    const { name, email, clerkId, imageUrl } = await request.json();
 
     if (!name || !email || !clerkId) {
       return Response.json(
@@ -13,19 +14,30 @@ export async function POST(request: Request) {
       );
     }
 
+    // A consulta foi alterada para aceitar profile_img.
+    // Se imageUrl for fornecido, ele será salvo. Se for undefined (do cadastro manual),
+    // o valor padrão (NULL, por exemplo) do banco de dados será usado.
     const response = await sql`
       INSERT INTO users(
         name,
         email,
-        clerk_id
+        clerk_id,
+        profile_img
       )
       VALUES (
         ${name},
         ${email},
-        ${clerkId}
-      );
+        ${clerkId},
+        ${imageUrl || null}
+      )
+      ON CONFLICT (clerk_id) DO NOTHING
+      RETURNING *;
     `;
-    console.log('Usuário criado com sucesso:', response);
+    
+    // Adicionamos a cláusula ON CONFLICT DO NOTHING para evitar erros
+    // se o utilizador já existir (ex: ao fazer login com Google uma segunda vez).
+    
+    console.log('Usuário criado/atualizado com sucesso:', response);
     return new Response(JSON.stringify({ data: response }), { status: 201 });
 
   } catch (err) {

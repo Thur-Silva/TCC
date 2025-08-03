@@ -43,7 +43,7 @@ const SignIn = () => {
 
             if (signInAttempt.status === 'complete') {
                 await setActive({ session: signInAttempt.createdSessionId });
-                router.replace('/(root)/(tabs)/home');
+                router.replace('/(root)/(tabs)/home')
             } else {
                 // Se a tentativa de login não for completa, exibe um erro
                 showErrorModal('Ocorreu um erro ao tentar fazer login.');

@@ -5,24 +5,29 @@ import { Image, Text, View } from "react-native";
 import { ReactNativeModal } from "react-native-modal";
 import { ErrorModalProps } from "types/types";
 
+// Observação: É uma boa prática definir a interface `ErrorModalProps` em seu arquivo `types/types.ts`
+// para que o TypeScript a reconheça globalmente.
+
 const ErrorModal = ({
-     title = 'Algo está fora do esperado', 
-     isErrorVisible,
-     errorMessage,
-     icon,
-     iconStyle,
-     secondOption,
-     firstButtonText,
-     onFirstButtonPress,
-     onClose,
+    title = 'Algo está fora do esperado',
+    isErrorVisible,
+    errorMessage,
+    icon,
+    iconStyle,
+    secondOption,
+    firstButtonText,
+    onFirstButtonPress,
+    secondButtonText,
+    onSecondButtonPress,
+    onClose,
 }: ErrorModalProps) => {
 
     const [isErrorVisibleConst, setErrorVisibleConst] = useState(false);
 
-    return(
+    return (
         <ReactNativeModal
-        isVisible={isErrorVisible}
-        statusBarTranslucent={true}>
+            isVisible={isErrorVisible}
+            statusBarTranslucent={true}>
             <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px] justify-center items-center ">
                 <Image source={icon ? icon : images.error} className={`w-[110px] h-[110] mx-auto xy-5 ${iconStyle}`} />
 
@@ -32,15 +37,24 @@ const ErrorModal = ({
 
                 {secondOption && (
                     <CustomButton
-                        title={` ${firstButtonText ? firstButtonText : "Sim, mudar"}`}
+                        // CORREÇÃO: Garante que o título é sempre uma string
+                        title={firstButtonText ?? "Sim, continuar"}
                         className="w-full mb-5 mt-10 bg-primary-500"
                         onPress={onFirstButtonPress}
                     />
                 )}
-                <CustomButton title="Fechar" className={`${secondOption ? "" : "mt-10" } w-full`} bgVariant={`${secondOption? "bg-red-500" : "bg-primary-500" }`} onPress={onClose}/>
+
+                <CustomButton
+                    // CORREÇÃO: Garante que o título é sempre uma string
+                    title={secondOption ? (secondButtonText ?? "Cancelar") : "Fechar"}
+                    className={`${secondOption ? "" : "mt-10"} w-full`}
+                    bgVariant={`${secondOption ? "bg-red-500" : "bg-primary-500"}`}
+                    // CORREÇÃO: Usa onSecondButtonPress para o segundo botão, e onClose para o botão único
+                    onPress={secondOption ? onSecondButtonPress : onClose}
+                />
             </View>
         </ReactNativeModal>
-    );  
+    );
 };
 
 export default ErrorModal;

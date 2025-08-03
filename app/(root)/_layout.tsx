@@ -12,6 +12,7 @@ import 'react-native-reanimated';
           <Stack.Screen name="[chatId]/messages" options={{ headerShown: false }} />
           <Stack.Screen name="individualProfile" options={{ headerShown: false }} />
           <Stack.Screen name="(configTabs)/changePassword" options={{ headerShown: false }} />
+          <Stack.Screen name="(configTabs)/driverRegistration" options={{ headerShown: false }} />
           
 
         </Stack>

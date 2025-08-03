@@ -18,7 +18,12 @@ export default function ChatsLayout({ item, onPress }: ChatsLayoutProps) {
   const { partnerName, partnerProfileImg, lastMessage, lastMessageAt } = item;
   return (
     <TouchableOpacity onPress={onPress} className="w-full flex-row items-center justify-between py-5 px-4">
-      <Image source={partnerProfileImg ? { uri: partnerProfileImg } : icons.defaultUser} className="w-16 h-16 rounded-full" />
+      {/* CORREÇÃO: A URL da imagem é verificada. Se for uma string não vazia, é usada.
+          Caso contrário, a imagem de placeholder local é utilizada. */}
+      <Image
+        source={partnerProfileImg && partnerProfileImg.length > 0 ? { uri: partnerProfileImg } : icons.defaultUser}
+        className="w-16 h-16 rounded-full"
+      />
       <View className="flex-1 ml-4">
         <Text className="text-lg font-JakartaSemiBold">{partnerName}</Text>
         <Text className="text-sm text-gray-500 font-Jakarta">{lastMessage}</Text>

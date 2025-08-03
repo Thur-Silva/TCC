@@ -21,7 +21,7 @@ export default function NotFoundScreen() {
         </View>
          
               <CustomButton
-            title={"Home"}
+            title={"Inicio"}
             onPress={() => 
                 router.replace('/(root)/(tabs)/home')}
             className="w-9/12 mt-10 mb-5"
