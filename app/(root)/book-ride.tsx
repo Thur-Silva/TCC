@@ -1,125 +1,133 @@
 import { useUser } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
 import { Image, Text, View } from "react-native";
 
-import Payment from "@/components/Payment";
+import CustomButton from "@/components/CustomButton";
 import RideLayout from "@/components/RideLayout";
-import { icons } from "@/constants";
+import SuccessModal from "@/components/SuccessModal";
 import { formatTime } from "@/lib/utils";
 import { useDriveStore, useLocationStore } from "@/store";
-// import { StripeProvider } from '@stripe/stripe-react-native';
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 
-
 const BookRide = () => {
-    const {user} = useUser();
-    const {userAddress, destinationAddress} = useLocationStore();
-    const {drivers, selectedDriver} = useDriveStore();
+    const { user } = useUser();
+    const { userAddress, destinationAddress } = useLocationStore();
+    const { drivers, selectedDriver } = useDriveStore();
     const [publicKey, setPublicKey] = useState('');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    const fetchKey =()=>{
-        //////////////////////////////////////////////////////////////////
+    const fetchKey = async () => {
+        // Lógica para buscar a chave pública da API
     };
 
-    const fetchPublicKey = async ()=>{
-        const key = await fetchKey();
-        setPublicKey(key!);
+    const fetchPublicKey = async () => {
+        // Lógica para buscar a chave pública da API
+        // const key = await fetchKey();
+        // setPublicKey(key!);
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchPublicKey();
-    },[]);
+    }, []);
 
-    const driverDetails = drivers?.filter(
-        (driver) => +driver.id === selectedDriver,
-    )[0];
+    const driverDetails = drivers?.find(
+        (driver) => Number(driver.id) === selectedDriver,
+    );
 
-         {/*
-         <StripeProvider
-        publishableKey={publicKey!}
-        merchantIdentifier="merchant.identifier"
-        urlScheme=""
-        >
-        */}  
+    const handleConfirmBooking = () => {
+        // Lógica para processar a corrida...
 
+        // Ao finalizar, mostra o modal de sucesso
+        setShowSuccessModal(true);
+    };
 
+    const handleModalClose = () => {
+        setShowSuccessModal(false);
+        router.replace("/(root)/(tabs)/home");
+    };
 
     return (
-        <RideLayout title="Descubra mais">
+        <RideLayout title="Confirme sua corrida">
             <>
-                <Text className="text-xl font-JakartaSemiBold mb-3">
-                    Infomações sobre a Corrida
-                </Text>
-
-                <View className="flex flex-col w-full items-center justify-center mt-10">
-                    <Image
-                        source={{uri: driverDetails?.profile_image_url!}}
-                        className="w-28 h-28 rounded-full"
-                    />
-
-                    <View className="flex flex-row items-center justify-center mt-5 space-x-2">
-                        <Text className="text-lg font-JakartaSemiBold">
-                            {driverDetails?.title}
+                {/* Informações do Motorista */}
+                <View className="flex flex-col items-center justify-center my-4">
+                    <View className="flex-row items-center justify-center mb-4">
+                        <Image
+                            source={{ uri: driverDetails?.profile_image_url! }}
+                            className="w-28 h-28 rounded-full border-2 border-[#4598ff]"
+                        />
+                    </View>
+                    <Text className="text-3xl font-JakartaExtraBold text-[#1456a7]">{driverDetails?.title}</Text>
+                    <View className="flex-row items-center space-x-1 mt-2">
+                        <Ionicons name="star" size={20} color="#F5B21E" />
+                        <Text className="text-lg font-JakartaSemiBold text-gray-700">
+                            {driverDetails?.rating || '4.5'}
                         </Text>
-
-                        <View className="flex flex-row items-center space-x-0.5">
-                            <Image
-                                source={icons.star}
-                                className="w-5 h-5"
-                                resizeMode="contain"
-                            />
-                            <Text className="text-lg font-JakartaRegular">
-                                {driverDetails?.rating}
-                            </Text>
-                        </View>
                     </View>
                 </View>
 
-                <View
-                    className="flex flex-col w-full items-start justify-center py-3 px-5 rounded-3xl bg-general-600 mt-5">
-                    <View className="flex flex-row items-center justify-between w-full border-b border-white py-3">
-                        <Text className="text-lg font-JakartaRegular">Preço</Text>
-                        <Text className="text-lg font-JakartaRegular text-[#0CC25F]">
-                            ${driverDetails?.price}
+                {/* Card de Detalhes da Corrida com Glassmorphism */}
+                <View className="w-full flex-col p-5 mt-5 rounded-2xl bg-[#ffffff40] backdrop-blur-lg">
+                    <Text className="text-xl font-JakartaSemiBold text-gray-800 mb-4">Detalhes da Corrida</Text>
+                    <View className="flex-row items-center justify-between w-full border-b border-gray-300 py-3">
+                        <Text className="text-base font-JakartaRegular text-gray-600">Preço</Text>
+                        <Text className="text-lg font-JakartaBold text-green-600">
+                            R$ {driverDetails?.price || '0.00'}
                         </Text>
                     </View>
-
-                    <View className="flex flex-row items-center justify-between w-full border-b border-white py-3">
-                        <Text className="text-lg font-JakartaRegular">Horário</Text>
-                        <Text className="text-lg font-JakartaRegular">
-                            {formatTime(driverDetails?.time || "Entre em contato com o mototirsta")}
+                    <View className="flex-row items-center justify-between w-full border-b border-gray-300 py-3">
+                        <Text className="text-base font-JakartaRegular text-gray-600">Horário Estimado</Text>
+                        <Text className="text-base font-JakartaRegular text-gray-700">
+                            {formatTime(driverDetails?.time || "A combinar")}
                         </Text>
                     </View>
-
-                    <View className="flex flex-row items-center justify-between w-full py-3">
-                        <Text className="text-lg font-JakartaRegular">Bancos livres</Text>
-                        <Text className="text-lg font-JakartaRegular">
+                    <View className="flex-row items-center justify-between w-full py-3">
+                        <Text className="text-base font-JakartaRegular text-gray-600">Assentos Livres</Text>
+                        <Text className="text-base font-JakartaRegular text-gray-700">
                             {driverDetails?.car_seats}
                         </Text>
                     </View>
                 </View>
 
-                <View className="flex flex-col w-full items-start justify-center mt-5">
-                    <View
-                        className="flex flex-row items-center justify-start mt-3 border-t border-b border-general-700 w-full py-3">
-                        <Image source={icons.to} className="w-6 h-6"/>
-                        <Text className="text-lg font-JakartaRegular ml-2">
+                {/* Seção da Rota com design melhorado */}
+                <View className="flex-col w-full mt-8">
+                    <Text className="text-lg font-JakartaSemiBold text-[#1456a7] mb-4">Sua Rota</Text>
+                    <View className="flex-row items-start border-l-2 border-dashed border-gray-400 pl-4 relative">
+                        <View className="absolute left-[-12] top-[-5]">
+                            <Ionicons name="location-sharp" size={24} color="#1456a7" />
+                        </View>
+                        <Text className="text-base font-JakartaMedium text-gray-700 mb-6">
                             {userAddress}
                         </Text>
                     </View>
-
-                    <View className="flex flex-row items-center justify-start border-b border-general-700 w-full py-3">
-                        <Image source={icons.point} className="w-6 h-6"/>
-                        <Text className="text-lg font-JakartaRegular ml-2">
+                    <View className="flex-row items-start border-l-2 border-transparent pl-4 relative">
+                        <View className="absolute left-[-12] top-[-5]">
+                            <Ionicons name="flag-sharp" size={24} color="#4598ff" />
+                        </View>
+                        <Text className="text-base font-JakartaMedium text-gray-700">
                             {destinationAddress}
                         </Text>
                     </View>
                 </View>
-                <Payment
-                
+
+                {/* Botão de Confirmação Ousado */}
+                <CustomButton
+                    title="Confirmar Corrida"
+                    onPress={handleConfirmBooking}
+                    className="mt-8 bg-[#1456a7] shadow-lg"
+                    textClassName="font-JakartaExtraBold text-lg"
                 />
             </>
+            {/* Modal de Sucesso */}
+            <SuccessModal
+                ShowSuccessModal={showSuccessModal}
+                title="Corrida Solicitada!"
+                description={`Sua corrida com ${driverDetails?.title} foi solicitada. O motorista aceitará em breve.`}
+                onClose={handleModalClose}
+                link="/(root)/(tabs)/home"
+            />
         </RideLayout>
-         // </StripeProvider>
     );
 };
 

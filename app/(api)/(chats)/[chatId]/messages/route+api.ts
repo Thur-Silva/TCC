@@ -11,31 +11,43 @@ type Message = {
   profile_img: string;
 };
 
-export async function GET(request: Request, { params }: { params: { chatId: string } }) {
+export async function GET(request: Request) {
   console.error("Está batendo na [/api]/(chats)/[chatId]/messages/route+api.ts");
-  const chatId = params.chatId;
 
-  const messages = await sql`
-    SELECT 
-      m.id,
-      m.sender_id,
-      m.sender_name,
-      m.message,
-      m.sent_at,
-      u.profile_img
-    FROM messages m
-    JOIN users u ON u.id::text = m.sender_id
-    WHERE m.chat_id = ${chatId}
-    ORDER BY m.sent_at
-  ` as Message[];
+  const url = new URL(request.url);
+  const chatId = url.searchParams.get("chatId");
+
+  if (!chatId) {
+    return Response.json({ error: "Missing chatId" }, { status: 400 });
+  }
+
+ const messages = await sql`
+  SELECT 
+    m.id,
+    m.sender_id,
+    m.sender_name,
+    m.message,
+    m.sent_at,
+    u.profile_img
+  FROM messages m
+  JOIN users u ON u.id = m.sender_id::integer
+  WHERE m.chat_id = ${chatId}
+  ORDER BY m.sent_at
+` as Message[];
 
   console.log(`[GET messages] Fetched ${messages.length} messages for chatId: ${chatId}`);
 
   return Response.json({ data: messages });
 }
 
-export async function POST(request: Request, { params }: { params: { chatId: string } }) {
-  const chatId = params.chatId;
+export async function POST(request: Request) {
+  const url = new URL(request.url);
+  const chatId = url.searchParams.get("chatId");
+
+  if (!chatId) {
+    return Response.json({ error: "Missing chatId" }, { status: 400 });
+  }
+
   const { senderId, senderName, message } = await request.json();
 
   if (!senderId || !senderName || !message) {

@@ -37,7 +37,7 @@ declare interface SuccessModalProps{
 
      ButtomText?:string;
 
-     ButtomOnPress?: void;
+     ButtomOnPress?:() => void;
 
      link?: any
 
@@ -59,6 +59,8 @@ declare interface ErrorModalProps {
     errorMessage: any;
 
      icon?: ImageSourcePropType;
+
+     firstButtonText?: string;
 
      iconStyle?: string;
      
@@ -104,6 +106,7 @@ declare interface Ride {
 declare interface ButtonProps extends TouchableOpacityProps {
     title: string;
     bgVariant?: string;
+     textClassName?: string;
     textVariant?: "primary" | "default" | "secondary" | "danger" | "success";
     IconLeft?: React.ComponentType<any>;
     IconRight?: React.ComponentType<any>;
@@ -190,6 +193,7 @@ declare interface DriverCardProps {
 export interface Chat {
   id: string;
   partnerName: string;
+  partnerId: number | string;
   partnerProfileImg: string;
   lastMessage: string;
   lastMessageAt: string; // ISO string ou Date
@@ -203,6 +207,7 @@ export interface Message {
   sent_at: string; // ISO string ou Date
   profile_img: string;
   status: 'pending' | 'sent' | 'failed';
+    is_edited?: boolean; // opcional, se a mensagem pode ser editada
   temp_id?: string; // usado para mensagens pendentes antes de serem enviadas
 }
 

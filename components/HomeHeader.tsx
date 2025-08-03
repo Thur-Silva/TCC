@@ -33,7 +33,7 @@ const HomeHeader = ({
 
   return (
     <>
-    <View className={`${globalClassName && globalClassName} w-full`}>
+    <View className={`${globalClassName} w-full`}>
 
       {showAutocomplete && (
         <Pressable

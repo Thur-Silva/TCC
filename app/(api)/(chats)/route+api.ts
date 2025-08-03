@@ -28,7 +28,7 @@ export async function GET(request: Request) {
   const chats = await sql`
     SELECT
       cp.chat_id AS id,
-      CASE WHEN cp.user_id = ${userId} THEN cp2.user_id ELSE cp.user_id END AS partner_id,
+      cp2.user_id AS partner_id,
       m2.message AS last_message,
       m2.sent_at AS last_message_at
     FROM chat_participants cp
@@ -39,7 +39,6 @@ export async function GET(request: Request) {
       WHERE chat_id = cp.chat_id
       ORDER BY sent_at DESC LIMIT 1
     ) AS m2 ON true
-    GROUP BY cp.chat_id, cp2.user_id, cp.user_id, m2.message, m2.sent_at
     ORDER BY m2.sent_at DESC
   ` as ChatRow[];
 
@@ -49,18 +48,25 @@ export async function GET(request: Request) {
     SELECT id, name, profile_img FROM users WHERE id = ANY(${partnerIds})
   ` as UserRow[];
 
-  console.log(`[GET chats] Fetched ${chats.length} chats for userId: ${userId}`);
+  console.log(`[GET chats] Fetched ${chats.length} chats for userId: ${userId} and patnerId:`);
 
   const result = chats.map(chat => {
     const partner = partners.find(p => p.id === chat.partner_id);
+    console.log(partner);
     return {
       id: chat.id,
       partnerName: partner?.name ?? "Desconhecido",
       partnerProfileImg: partner?.profile_img ?? "",
       lastMessage: chat.last_message,
       lastMessageAt: chat.last_message_at,
+      partnerId: partner?.id,
     };
   });
 
   return Response.json({ data: result });
+}
+
+export async function POST(request: Request) {
+  console.error("POST method not implemented.");
+  return Response.json({ error: "Method not allowed" }, { status: 405 });
 }

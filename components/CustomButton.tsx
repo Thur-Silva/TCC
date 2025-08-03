@@ -39,6 +39,7 @@ const CustomButton = ({
      IconLeft, 
      IconRight,
      className,
+      textClassName,
      ...props
     }:ButtonProps) => (
 
@@ -47,7 +48,7 @@ const CustomButton = ({
     {...props}
     >
         {IconLeft && <IconLeft />}
-            <Text className={`text-lg font-bold ${getTextVariantStyle(textVariant)}`}>{title}</Text>
+            <Text className={`text-lg font-bold ${textClassName} ${getTextVariantStyle(textVariant)}`}>{title}</Text>
         {IconRight && <IconRight />}
     </TouchableOpacity>
 )

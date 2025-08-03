@@ -33,3 +33,32 @@ export async function POST(request: Request) {
     return Response.json({ error: err }, { status: 500 });
   }
 }
+
+export async function GET(request: Request) {
+    try {
+        const sql = neon(`${process.env.DATABASE_URL}`);
+        
+        // Crie um objeto URL para analisar os parâmetros de busca
+        const { searchParams } = new URL(request.url);
+        const clerkId = searchParams.get('clerkId');
+
+        if (!clerkId) {
+            return Response.json({ error: 'clerkId is required' }, { status: 400 });
+        }
+
+        const [user] = await sql`
+            SELECT * FROM users
+            WHERE clerk_id = ${clerkId};
+        `;
+
+        if (!user) {
+            return Response.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        return Response.json({ data: user }, { status: 200 });
+
+    } catch (err) {
+        console.log("Error:", err);
+        return Response.json({ error: err }, { status: 500 });
+    }
+}

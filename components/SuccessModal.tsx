@@ -2,55 +2,63 @@ import CustomButton from "@/components/CustomButton";
 import { images } from "@/constants";
 import { SuccessModalProps } from "@/types/types";
 import { router } from "expo-router";
-import { useState } from "react";
 import { Image, Text, View } from "react-native";
 import { ReactNativeModal } from "react-native-modal";
 
 const SuccessModal = ({
-     ShowSuccessModal,
-     title ='Sucesso!',
-     description,
-     onClose,
-     ButtomText = 'Ok',
-     ButtomOnPress,
-     link,
+    ShowSuccessModal,
+    title = 'Sucesso!',
+    description,
+    onClose,
+    ButtomText = 'Ok',
+    ButtomOnPress,
+    link,
 }: SuccessModalProps) => {
 
-    const [isErrorVisibleConst, setErrorVisibleConst] = useState(false);
+    const handleButtonPress = () => {
+        if (ButtomOnPress) {
+            ButtomOnPress();
+        }
 
-    const SwapScrens = (adress: any)=>{
-        router.push(adress);
-    }
+        if (link) {
+            router.push(link);
+        }
 
-    return(
-            <ReactNativeModal 
-            isVisible ={ ShowSuccessModal }
-            statusBarTranslucent={true}>
-                    <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px] items-center">
-                        <Image source={images.check} className="w-[110px] h-[110] mx-auto xy-5"/>
+        // Garante que a função onClose seja chamada
+        if (onClose) {
+            onClose();
+        }
+    };
 
-                        <Text className="text-3xl mt-7 font-JakartaBold">
-                            {title}
-                        </Text>
+    return (
+        <ReactNativeModal
+            isVisible={ShowSuccessModal}
+            statusBarTranslucent={true}
+            animationIn="zoomIn" // Animação de entrada
+            animationOut="zoomOut" // Animação de saída
+        >
+            <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px] items-center">
+                <Image
+                    source={images.check}
+                    className="w-[110px] h-[110px] mx-auto mb-5"
+                />
 
-                         <Text className="text-base text-gray-500 mt-2 font-JakartaBold">
-                           {description}
-                        </Text>
+                <Text className="text-3xl font-JakartaBold text-[#1456a7] mt-7 text-center">
+                    {title}
+                </Text>
 
-                        <CustomButton
-                        title={ButtomText}
-                        className="p-2 w-[100px] mt-10"
-                        onPress={()=>{
-                            onClose;
-                            
-                            if(link){
-                                SwapScrens(link);
-                            }
-                        }}
-                        />
-                    </View>
-             </ReactNativeModal>
-    );  
+                <Text className="text-base text-gray-500 mt-2 font-JakartaMedium text-center">
+                    {description}
+                </Text>
+
+                <CustomButton
+                    title={ButtomText}
+                    className="p-2 mt-10 w-40"
+                    onPress={handleButtonPress}
+                />
+            </View>
+        </ReactNativeModal>
+    );
 };
 
 export default SuccessModal;

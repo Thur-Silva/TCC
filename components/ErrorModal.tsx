@@ -12,6 +12,7 @@ const ErrorModal = ({
      icon,
      iconStyle,
      secondOption,
+     firstButtonText,
      onFirstButtonPress,
      onClose,
 }: ErrorModalProps) => {
@@ -31,12 +32,12 @@ const ErrorModal = ({
 
                 {secondOption && (
                     <CustomButton
-                        title="Sim, mudar"
+                        title={` ${firstButtonText ? firstButtonText : "Sim, mudar"}`}
                         className="w-full mb-5 mt-10 bg-primary-500"
                         onPress={onFirstButtonPress}
                     />
                 )}
-                <CustomButton title="Fechar" className={`${secondOption ? "" : "mt-10" }`} bgVariant={`${secondOption? "bg-red-500" : "bg-primary-500" }`} onPress={onClose}/>
+                <CustomButton title="Fechar" className={`${secondOption ? "" : "mt-10" } w-full`} bgVariant={`${secondOption? "bg-red-500" : "bg-primary-500" }`} onPress={onClose}/>
             </View>
         </ReactNativeModal>
     );  
