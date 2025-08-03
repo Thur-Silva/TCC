@@ -15,7 +15,7 @@ const driverDataSchema = Yup.object().shape({
 const carDataSchema = Yup.object().shape({
     cnhInfo: Yup.string().required('Informação da CNH é obrigatória'),
     cnhValidity: Yup.string().required('Data de validade da CNH é obrigatória'),
-    hasEar: Yup.boolean().oneOf([true], 'CNH com EAR é obrigatória'),
+    hasEar: Yup.boolean().oneOf([true, false]),
     carBrand: Yup.string().required('Marca do carro é obrigatória'),
     carModel: Yup.string().required('Modelo do carro é obrigatório'),
     carPlate: Yup.string().matches(/^[A-Z]{3}-\d{4}$/, 'Placa inválida (ex: ABC-1234)').required('Placa do carro é obrigatória'),
