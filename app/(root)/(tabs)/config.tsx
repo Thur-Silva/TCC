@@ -8,7 +8,11 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
 
-// Componente para um item de configuração com ícone e texto
+import { icons } from '@/constants';
+import { fetchAPI } from '@/lib/fecth'; // suposição do caminho correto do fetchAPI
+import { clearChatCache } from '@/services/chatCache';
+import cacheService from '@/services/globalCache';
+
 const ConfigItem = ({
     label,
     value,
@@ -57,7 +61,6 @@ const ConfigItem = ({
     </TouchableOpacity>
 );
 
-// Componente para um item de configuração com switch
 const ConfigSwitch = ({
     label,
     value,
@@ -95,7 +98,7 @@ const ConfigSwitch = ({
 export default function ConfigScreen() {
     const { signOut } = useAuth();
     const { user } = useUser();
-    
+
     const [enableDriverMode, setEnableDriverMode] = useState(false);
     const [messageSound, setMessageSound] = useState(true);
     const [syncMessages, setSyncMessages] = useState(true);
@@ -103,9 +106,8 @@ export default function ConfigScreen() {
 
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [showClearCacheModal, setShowClearCacheModal] = useState(false);
-    // ADIÇÃO: Novo estado para o modal de confirmação do modo motorista
     const [showDriverModeModal, setShowDriverModeModal] = useState(false);
-    
+
     const [storageUsage, setStorageUsage] = useState('0 KB');
     const [isOnline, setIsOnline] = useState(true);
 
@@ -114,54 +116,78 @@ export default function ConfigScreen() {
             setIsOnline(state.isConnected !== null ? state.isConnected : false);
         });
 
-        setStorageUsage('128 KB');
+        cacheService.getCacheSize().then(setStorageUsage);
 
         return () => unsubscribe();
     }, []);
 
-    const handleLogout = () => {
-        setShowLogoutModal(true);
-    };
+    const handleLogout = () => setShowLogoutModal(true);
 
     const confirmLogout = async () => {
-       try {
-        await signOut();
-        router.replace('/sign-in');
-    } catch (error) {
-        console.error("Ocorreu um erro durante o logout:", error);
-    }
-    };
-
-    const handleClearCache = async () => {
-        setShowClearCacheModal(true);
-    };
-
-    const confirmClearCache = async () => {
-        setShowClearCacheModal(false);
-    }
-    
-    // ADIÇÃO: Lógica para o modo motorista
-    const handleDriverModeChange = (value: boolean) => {
-        if (value) {
-            // Se o utilizador tentar ativar o modo, mostre o modal de confirmação
-            setShowDriverModeModal(true);
-        } else {
-            // Se o utilizador desativar, faça a mudança de estado diretamente
-            setEnableDriverMode(false);
-            // Poderíamos adicionar lógica aqui para reverter o perfil para passageiro, se necessário
+        try {
+            await signOut();
+            router.replace('/sign-in');
+        } catch (error) {
+            console.error('Ocorreu um erro durante o logout:', error);
         }
     };
 
+    const handleClearCache = () => setShowClearCacheModal(true);
+
+    const confirmClearCache = async () => {
+        await cacheService.clearAllCache();
+        const size = await cacheService.getCacheSize();
+        setStorageUsage(size);
+        setShowClearCacheModal(false);
+    };
+
+    const handleDriverModeChange = (value: boolean) => {
+        if (value) setShowDriverModeModal(true);
+        else setEnableDriverMode(false);
+    };
+
     const confirmDriverMode = () => {
-        // Ativa o modo motorista e navega para a tela de cadastro
         setEnableDriverMode(true);
         setShowDriverModeModal(false);
         router.push({ pathname: '/(root)/(configTabs)/driverRegistration' });
-    }
+    };
+
+    const handleClearChatCache = async () => {
+        console.log('Limpando cache de chats... para o usuário:', user?.id);
+        if (!user?.id) return;
+
+        try {
+            // Buscar clerk_id do NeonDB via fetchAPI, enviando user.id (Clerk userId)
+            const response = await fetchAPI(`/(api)/user?clerkId=${user?.id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha ao obter dados do usuário no banco');
+            }
+
+            const data = await response.json();
+            const dbUserId = data?.id;
+
+            if (!dbUserId) {
+                throw new Error('Usuário não encontrado no banco de dados');
+            }
+
+            // Limpar cache usando o id do banco de dados (dbUserId)
+            await clearChatCache(dbUserId);
+
+            // Atualizar uso de armazenamento
+            const size = await cacheService.getCacheSize();
+            setStorageUsage(size);
+        } catch (error) {
+            console.warn('Erro ao limpar cache de chats:', error);
+        }
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-white mb-[100px]">
-            <HomeHeader showInput={true} globalClassName='mt-14' />
+            <HomeHeader showInput={true} globalClassName="mt-14" />
 
             <ScrollView
                 className="px-5 pt-8"
@@ -172,7 +198,6 @@ export default function ConfigScreen() {
                     Configurações
                 </Text>
 
-                {/* Seção da Conta */}
                 <Text className="text-2xl font-JakartaBold mb-4 text-[#1456a7]">Conta</Text>
                 <ConfigItem
                     label="E-mail"
@@ -191,8 +216,7 @@ export default function ConfigScreen() {
                     iconName="log-out-outline"
                     isDestructive
                 />
-                
-                {/* Seção de Preferências */}
+
                 <Text className="text-2xl font-JakartaBold mt-8 mb-4 text-[#1456a7]">
                     Preferências
                 </Text>
@@ -201,7 +225,6 @@ export default function ConfigScreen() {
                     description="Alterna entre perfil de passageiro e motorista."
                     iconName="car-sport-outline"
                     value={enableDriverMode}
-                    // ALTERAÇÃO: Chama a nova função de ativação
                     onValueChange={handleDriverModeChange}
                 />
                 <ConfigSwitch
@@ -218,13 +241,14 @@ export default function ConfigScreen() {
                     value={syncMessages}
                     onValueChange={setSyncMessages}
                 />
-                <ConfigItem
+       
+               <ConfigItem
                     label="Limpar Cache de Chats"
-                    onPress={() => {}}
+                    onPress={handleClearChatCache}
                     iconName="chatbox-ellipses-outline"
                 />
+          
 
-                {/* Seção de Dados e Armazenamento */}
                 <Text className="text-2xl font-JakartaBold mt-8 mb-4 text-[#1456a7]">
                     Armazenamento e Cache
                 </Text>
@@ -240,8 +264,7 @@ export default function ConfigScreen() {
                     iconName="trash-outline"
                     isDestructive
                 />
-                
-                {/* Seção de Sistema */}
+
                 <Text className="text-2xl font-JakartaBold mt-8 mb-4 text-[#1456a7]">Sistema</Text>
                 <ConfigItem
                     label="Versão do Aplicativo"
@@ -263,7 +286,6 @@ export default function ConfigScreen() {
                     onValueChange={setEnableOfflineMode}
                 />
 
-                {/* Seção de Suporte */}
                 <Text className="text-2xl font-JakartaBold mt-8 mb-4 text-[#1456a7]">Suporte</Text>
                 <ConfigItem
                     label="Fale Conosco"
@@ -281,8 +303,7 @@ export default function ConfigScreen() {
                     iconName="reader-outline"
                 />
             </ScrollView>
-            
-            {/* Modals */}
+
             <ErrorModal
                 isErrorVisible={showLogoutModal}
                 title="Deseja mesmo sair?"
@@ -301,7 +322,6 @@ export default function ConfigScreen() {
                 onFirstButtonPress={confirmClearCache}
                 secondOption
             />
-            {/* ADIÇÃO: Novo modal para o modo motorista */}
             <ErrorModal
                 isErrorVisible={showDriverModeModal}
                 title="Ativar Modo Motorista?"
@@ -312,6 +332,7 @@ export default function ConfigScreen() {
                 secondButtonText="Cancelar"
                 onSecondButtonPress={() => setShowDriverModeModal(false)}
                 secondOption
+                icon={icons.question}
             />
         </SafeAreaView>
     );

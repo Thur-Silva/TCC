@@ -29,7 +29,7 @@ const ErrorModal = ({
             isVisible={isErrorVisible}
             statusBarTranslucent={true}>
             <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px] justify-center items-center ">
-                <Image source={icon ? icon : images.error} className={`w-[110px] h-[110] mx-auto xy-5 ${iconStyle}`} />
+                <Image source={icon ? icon : images.error} className={`w-[110px] h-[110px] mx-auto xy-5 ${iconStyle}`} />
 
                 <Text className="text-3xl font-JakartaExtraBold mb-2 mt-5 text-red-500">{title}</Text>
 

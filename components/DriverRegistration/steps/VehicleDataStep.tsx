@@ -89,6 +89,8 @@ export const VehicleDataStep: React.FC<VehicleDataStepProps> = ({
                 onChangeText={(text) => onFormChange('carBrand', text)}
                 error={errors.carBrand}
             />
+
+            <ErrorDisplay error={errors.carBrand} />
             
             <FormInput
                 label="Modelo do Carro *"
@@ -97,6 +99,8 @@ export const VehicleDataStep: React.FC<VehicleDataStepProps> = ({
                 onChangeText={(text) => onFormChange('carModel', text)}
                 error={errors.carModel}
             />
+
+            <ErrorDisplay error={errors.carModel} />
             
             <FormInput
                 label="Placa do Carro *"
@@ -108,6 +112,8 @@ export const VehicleDataStep: React.FC<VehicleDataStepProps> = ({
                 options={{ mask: 'AAA-9999' }}
             />
             
+            <ErrorDisplay error={errors.carPlate} />
+
             <FormInput
                 label="Cor do Carro *"
                 placeholder="Ex: Branco, Preto, Prata"
@@ -115,6 +121,8 @@ export const VehicleDataStep: React.FC<VehicleDataStepProps> = ({
                 onChangeText={(text) => onFormChange('carColor', text)}
                 error={errors.carColor}
             />
+
+            <ErrorDisplay error={errors.carColor} />
             
             <FormInput
                 label="Ano do Carro *"
@@ -124,6 +132,8 @@ export const VehicleDataStep: React.FC<VehicleDataStepProps> = ({
                 error={errors.carYear}
                 keyboardType="numeric"
             />
+
+            <ErrorDisplay error={errors.carYear} />
             
             <View className="flex-row justify-between space-x-4 mt-4">
                 <ActionButton
@@ -133,6 +143,7 @@ export const VehicleDataStep: React.FC<VehicleDataStepProps> = ({
                     variant="secondary"
                     disabled={false}
                 />
+                
                 <ActionButton
                     title="Continuar"
                     className="flex-1"

@@ -51,13 +51,6 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({
                     type="rectangular"
                 />
                 
-                <ImageUploadButton
-                    label="Certidão Criminal (opcional)"
-                    uri={criminalRecordImageUpload.uri}
-                    onPress={criminalRecordImageUpload.uploadImage}
-                    iconName="receipt-outline"
-                    type="rectangular"
-                />
             </View>
             
             <View className="flex-row justify-between space-x-4 mt-8">

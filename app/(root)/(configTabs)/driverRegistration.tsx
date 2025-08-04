@@ -142,6 +142,8 @@ export default function DriverRegistrationScreen() {
 
                 {renderStepContent()}
 
+            <View className='justify-center items-center mt-6'>
+
                 <ErrorModal
                     isErrorVisible={isErrorModalVisible}
                     title="Erro de Envio"
@@ -155,6 +157,9 @@ export default function DriverRegistrationScreen() {
                     description="Seu cadastro foi enviado! Fique de olho no seu e-mail para a aprovação."
                     onClose={handleSuccessModalClose}
                 />
+                
+            </View>
+
             </View>
         </SafeAreaView>
     );

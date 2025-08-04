@@ -61,27 +61,6 @@ const Layout = () => (
       }}
     />
 
-    <Tabs.Screen
-      name="rides"
-      options={{
-        title: 'Corridas',
-        headerShown: false,
-        tabBarIcon: ({ focused }: { focused: boolean }) => (
-          <TabIcon focused={focused} source={icons.list} />
-        ),
-      }}
-    />
-
-    <Tabs.Screen
-      name="config"
-      options={{
-        title: 'Config',
-        headerShown: false,
-        tabBarIcon: ({ focused }: { focused: boolean }) => (
-          <TabIcon focused={focused} source={icons.lock} />
-        ),
-      }}
-    />
 
     <Tabs.Screen
       name="chat"
@@ -93,6 +72,16 @@ const Layout = () => (
         ),
       }}
     />
+      <Tabs.Screen
+        name="config"
+        options={{
+          title: 'Config',
+          headerShown: false,
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <TabIcon focused={focused} source={icons.lock} />
+          ),
+        }}
+      />
 
     <Tabs.Screen
       name="profile"

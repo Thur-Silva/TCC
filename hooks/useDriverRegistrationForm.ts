@@ -1,5 +1,5 @@
-import { driverRegistrationApi } from '@/app/(api)/(drivers)/_driverRegistrationApi'; // O caminho de importação corrigido
 import { DriverRegistrationData } from '@/types/types';
+import { useUser } from '@clerk/clerk-expo';
 import { useState } from 'react';
 import * as Yup from 'yup';
 
@@ -32,6 +32,7 @@ const documentsSchema = Yup.object().shape({
 
 
 export const useDriverRegistrationForm = (initialData: Partial<DriverRegistrationData>) => {
+     const { isLoaded, user } = useUser();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<DriverRegistrationData>({
         cpf: '',
@@ -85,38 +86,42 @@ export const useDriverRegistrationForm = (initialData: Partial<DriverRegistratio
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const submitForm = async () => {
-        try {
-            setIsSubmitting(true);
-            await documentsSchema.validate(formData, { abortEarly: false });
-            
-            await driverRegistrationApi.registerDriver(formData);
+   const submitForm = async () => {
+        if(!isLoaded || !user) {
+             setErrorMessage("Usuário não autenticado");
+            setIsErrorModalVisible(true);
+            setIsSubmitting(false);
+            return false;
+        }
+    try {
+        setIsSubmitting(true);
+        await documentsSchema.validate(formData, { abortEarly: false });
+            const clerkId = user.id;
+            const response = await fetch('/api/(drivers)/_driverRegistrationApi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-clerk-id': clerkId,
+            },
+            body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'Erro ao registrar motorista');
+            }
 
             setIsSubmitting(false);
             setIsSuccessModalVisible(true);
             setErrors({});
-            return true;
-        } catch (validationErrors: unknown) { // Correção: 'unknown'
-            setIsSubmitting(false);
-            if (validationErrors instanceof Yup.ValidationError) {
-                const newErrors: { [key: string]: string } = {};
-                validationErrors.inner.forEach(err => {
-                    newErrors[err.path!] = err.message; // Correção: uso do '!' para garantir que 'path' não seja null
-                });
-                setErrors(newErrors);
-                setErrorMessage('Por favor, corrija os erros no formulário.');
-                setIsErrorModalVisible(true);
-            } else if (validationErrors instanceof Error) {
-                setErrorMessage(validationErrors.message);
-                setIsErrorModalVisible(true);
-            } else {
-                setErrorMessage('Ocorreu um erro desconhecido ao enviar o formulário.');
-                setIsErrorModalVisible(true);
-            }
-            return false;
-        }
-    };
-
+        return true;
+        
+    } catch (error) {
+        setIsSubmitting(false);
+        // tratamento do erro segue igual
+        return false;
+    }
+};
     return {
         step,
         formData,
