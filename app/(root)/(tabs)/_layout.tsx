@@ -12,18 +12,36 @@ const TabIcon = ({
       focused ? 'bg-general-300' : ''
     }`}
   >
+    {source === icons.home ? (
     <View
+      className={`rounded-full w-16 h-16 items-center justify-center ${
+        focused ? 'bg-[#5380b6]' : ''
+      } `}
+    >
+              <Image
+        source={source}
+        resizeMode="contain"
+        className="w-10 h-10"
+        style={{ tintColor: 'white' }} // ✅ CORREÇÃO
+      />
+    </View>
+      ):(
+
+           <View
       className={`rounded-full w-12 h-12 items-center justify-center ${
         focused ? 'bg-[#5380b6]' : ''
       } `}
     >
-      <Image
+         <Image
         source={source}
         resizeMode="contain"
         className="w-7 h-7"
         style={{ tintColor: 'white' }} // ✅ CORREÇÃO
       />
+
     </View>
+      )}
+     
   </View>
 );
 
@@ -50,17 +68,18 @@ const Layout = () => (
       },
     }}
   >
+
+
     <Tabs.Screen
-      name="home"
+      name="rides"
       options={{
-        title: 'Home',
+        title: 'Corridas',
         headerShown: false,
         tabBarIcon: ({ focused }: { focused: boolean }) => (
-          <TabIcon focused={focused} source={icons.home} />
+          <TabIcon focused={focused} source={icons.pin} />
         ),
       }}
-    />
-
+      />
 
     <Tabs.Screen
       name="chat"
@@ -72,6 +91,18 @@ const Layout = () => (
         ),
       }}
     />
+
+        <Tabs.Screen
+      name="home"
+      options={{
+        title: 'Home',
+        headerShown: false,
+        tabBarIcon: ({ focused }: { focused: boolean }) => (
+          <TabIcon focused={focused} source={icons.home} />
+        ),
+      }}
+    />
+
       <Tabs.Screen
         name="config"
         options={{

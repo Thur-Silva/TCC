@@ -97,6 +97,7 @@ declare interface MapProps {
 }
 
 declare interface Ride {
+    ride_id: string;
     origin_address: string;
     destination_address: string;
     origin_latitude: number;
@@ -114,6 +115,25 @@ declare interface Ride {
         last_name: string;
         car_seats: number;
     };
+}
+
+// ✅ Tipo base para coordenadas
+export interface Coordenada {
+  latitude: number
+  longitude: number
+}
+
+// ✅ Input fornecido pelo usuário ao buscar rides
+export interface UserInput {
+  origin: Coordenada
+  destination: Coordenada
+  userTime: string // horário estimado de chegada
+  onlyFree: boolean
+}
+
+// ✅ Ride com score calculado (uso interno na UI)
+export interface RideWithScore extends Ride {
+  score: number
 }
 
 

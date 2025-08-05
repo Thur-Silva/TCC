@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import MapView, {
-    Marker,
-    PROVIDER_DEFAULT,
-    Region,
-    UrlTile,
+  Marker,
+  PROVIDER_DEFAULT,
+  Region,
+  UrlTile,
 } from 'react-native-maps';
 
 import { icons } from '@/constants';
@@ -67,7 +67,7 @@ const Map: React.FC = () => {
   }} // remove a marca d'água
       >
         <UrlTile
-          urlTemplate={`https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=${GEOAPIFY_API_KEY}`}
+          urlTemplate={`https://maps.geoapify.com/v1/tile/positron/{z}/{x}/{y}.png?apiKey=${GEOAPIFY_API_KEY}`}
           maximumZ={19}
           flipY={false}
         />
