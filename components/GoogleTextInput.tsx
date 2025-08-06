@@ -3,13 +3,13 @@ import { useLocationStore } from "@/store";
 import { GoogleInputProps } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const API_KEYS = [

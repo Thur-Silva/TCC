@@ -1,8 +1,46 @@
 import { Driver, MarkerData } from "@/types/types";
 
-// Sua chave de API fornecida pelo OpenRouteService.
-// É crucial que esta chave esteja configurada corretamente.
-const OPEN_ROUTE_SERVICE_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjFlZWQxZmJlZTZhYzQ2MWRhZGIxNGI2N2VlN2QzZDZmIiwiaCI6Im11cm11cjY0In0=";
+// Array de chaves de API para fallback automático
+const API_KEYS = [
+  "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjFlZWQxZmJlZTZhYzQ2MWRhZGIxNGI2N2VlN2QzZDZmIiwiaCI6Im11cm11cjY0In0=",
+  "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjAyMmQ5OTUyYWM5NjQxYmZiNjI0YmM1ZTJjNjQyNWEwIiwiaCI6Im11cm11cjY0In0=", 
+  "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjAyMmQ5OTUyYWM5NjQxYmZiNjI0YmM1ZTJjNjQyNWEwIiwiaCI6Im11cm11cjY0In0=",
+];
+
+// Função para fazer requisição com fallback de chaves
+const fetchWithApiKeyFallback = async (baseUrl: string, headers: Record<string, string> = {}) => {
+  let lastError: Error | null = null;
+
+  for (let i = 0; i < API_KEYS.length; i++) {
+    const apiKey = API_KEYS[i];
+    // Verifica se a chave não é um placeholder
+    if (apiKey.includes('sua_') && apiKey.includes('_aqui')) {
+      console.warn(`Pulando chave de API ${i + 1} (placeholder)`);
+      continue;
+    }
+    
+    const url = `${baseUrl}&api_key=${apiKey}`;
+    
+    try {
+      console.log(`Tentando API Key ${i + 1}...`);
+      const response = await fetch(url, { headers });
+      
+      if (response.ok) {
+        console.log(`API Key ${i + 1} funcionou!`);
+        return response;
+      } else {
+        const errorText = await response.text();
+        console.warn(`API Key ${i + 1} failed (Status: ${response.status}): ${errorText}`);
+        lastError = new Error(`API Key ${i + 1} failed: ${response.status}`);
+      }
+    } catch (error) {
+      console.warn(`API Key ${i + 1} failed with error:`, error);
+      lastError = error as Error;
+    }
+  }
+
+  throw new Error(`Todas as chaves de API falharam. Último erro: ${lastError?.message}`);
+};
 
 export const generateMarkersFromData = ({
   data,
@@ -55,8 +93,8 @@ export const calculateRegion = ({
     return {
       latitude: userLatitude,
       longitude: userLongitude,
-      latitudeDelta:  0.005,
-      longitudeDelta:  0.005,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
     };
   }
 
@@ -82,6 +120,80 @@ export const calculateRegion = ({
   };
 };
 
+// Nova função para buscar directions
+export const getDirections = async ({
+  startLatitude,
+  startLongitude,
+  endLatitude,
+  endLongitude,
+}: {
+  startLatitude: number;
+  startLongitude: number;
+  endLatitude: number;
+  endLongitude: number;
+}): Promise<{ latitude: number; longitude: number }[]> => {
+  try {
+    console.log('Iniciando busca de direções...');
+    const baseUrl = `https://api.openrouteservice.org/v2/directions/driving-car?start=${startLongitude},${startLatitude}&end=${endLongitude},${endLatitude}`;
+    
+    const response = await fetchWithApiKeyFallback(baseUrl, {
+      'Accept': 'application/json, application/geo+json, application/gpx+xml, image/png',
+    });
+
+    const data = await response.json();
+    
+    // Verifica se é formato GeoJSON (features) ou formato routes
+    if (data.features && data.features.length > 0) {
+      // Formato GeoJSON
+      const feature = data.features[0];
+      console.log('Feature encontrada:', feature);
+      
+      if (feature.geometry && feature.geometry.coordinates) {
+        const coordinates = feature.geometry.coordinates;
+
+        
+        // Converte as coordenadas de [longitude, latitude] para {latitude, longitude}
+        const convertedCoordinates = coordinates.map((coord: [number, number]) => ({
+          longitude: coord[0],
+          latitude: coord[1],
+        }));
+        
+        console.log('Coordenadas convertidas:', convertedCoordinates.length, 'pontos');
+        return convertedCoordinates;
+      } else {
+        console.error('Geometria não encontrada na feature:', feature);
+      }
+    } else if (data.routes && data.routes.length > 0) {
+      // Formato routes (fallback)
+      const route = data.routes[0];
+      console.log('Rota encontrada:', route);
+      
+      if (route.geometry && route.geometry.coordinates) {
+        const coordinates = route.geometry.coordinates;
+        console.log('Coordenadas da rota (routes):', coordinates.length, 'pontos');
+        
+        // Converte as coordenadas de [longitude, latitude] para {latitude, longitude}
+        const convertedCoordinates = coordinates.map((coord: [number, number]) => ({
+          longitude: coord[0],
+          latitude: coord[1],
+        }));
+        
+        console.log('Coordenadas convertidas:', convertedCoordinates.length, 'pontos');
+        return convertedCoordinates;
+      } else {
+        console.error('Geometria da rota não encontrada:', route);
+      }
+    } else {
+      console.error('Nenhuma rota ou feature encontrada na resposta:', data);
+    }
+    
+    return [];
+  } catch (error) {
+    console.error("Erro detalhado ao buscar directions:", error);
+    throw error;
+  }
+};
+
 export const calculateDriverTimes = async ({
   markers,
   userLatitude,
@@ -104,69 +216,66 @@ export const calculateDriverTimes = async ({
   )
     return;
 
-  // Verifica se a chave da API do OpenRouteService está configurada.
-  if (!OPEN_ROUTE_SERVICE_API_KEY) {
-      console.error("OpenRouteService API Key is not configured. Please ensure it's set correctly.");
-      return; // Interrompe a execução se a chave não estiver presente.
-  }
-
   try {
     const timesPromises = markers.map(async (marker) => {
-      // **IMPORTANTE:** O OpenRouteService espera coordenadas no formato LONGITUDE,LATITUDE.
-      // Ajuste a ordem das coordenadas conforme necessário.
-
-      // 1. Calcula a rota do motorista (marker) até o usuário (user).
-      const urlToUser = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${OPEN_ROUTE_SERVICE_API_KEY}&start=${marker.longitude},${marker.latitude}&end=${userLongitude},${userLatitude}`;
-      const responseToUser = await fetch(urlToUser, {
-        headers: {
+      try {
+        // 1. Calcula a rota do motorista (marker) até o usuário (user).
+        const urlToUser = `https://api.openrouteservice.org/v2/directions/driving-car?start=${marker.longitude},${marker.latitude}&end=${userLongitude},${userLatitude}`;
+        const responseToUser = await fetchWithApiKeyFallback(urlToUser, {
           'Accept': 'application/json, application/geo+json, application/gpx+xml, image/png',
-        },
-      });
+        });
 
-      // Trata erros na resposta da API para a primeira rota.
-      if (!responseToUser.ok) {
-        const errorText = await responseToUser.text();
-        console.error(`OpenRouteService API Error (To User - Status: ${responseToUser.status}): ${errorText}`);
-        throw new Error(`Failed to get route to user.`);
-      }
-      const dataToUser = await responseToUser.json();
+        const dataToUser = await responseToUser.json();
+        
+        // Extrai duração baseado no formato da resposta
+        let timeToUser = 0;
+        if (dataToUser.features && dataToUser.features.length > 0) {
+          // Formato GeoJSON
+          timeToUser = dataToUser.features[0].properties.summary.duration;
+        } else if (dataToUser.routes && dataToUser.routes.length > 0) {
+          // Formato routes
+          timeToUser = dataToUser.routes[0].summary.duration;
+        }
 
-      // Extrai a duração da rota da resposta do OpenRouteService.
-      // O tempo é retornado em segundos.
-      const timeToUser = dataToUser.routes[0].summary.duration;
-
-      // 2. Calcula a rota do usuário (user) até o destino final (destination).
-      const urlToDestination = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${OPEN_ROUTE_SERVICE_API_KEY}&start=${userLongitude},${userLatitude}&end=${destinationLongitude},${destinationLatitude}`;
-      const responseToDestination = await fetch(urlToDestination, {
-        headers: {
+        // 2. Calcula a rota do usuário (user) até o destino final (destination).
+        const urlToDestination = `https://api.openrouteservice.org/v2/directions/driving-car?start=${userLongitude},${userLatitude}&end=${destinationLongitude},${destinationLatitude}`;
+        const responseToDestination = await fetchWithApiKeyFallback(urlToDestination, {
           'Accept': 'application/json, application/geo+json, application/gpx+xml, image/png',
-        },
-      });
+        });
 
-      // Trata erros na resposta da API para a segunda rota.
-      if (!responseToDestination.ok) {
-        const errorText = await responseToDestination.text();
-        console.error(`OpenRouteService API Error (To Destination - Status: ${responseToDestination.status}): ${errorText}`);
-        throw new Error(`Failed to get route to destination.`);
+        const dataToDestination = await responseToDestination.json();
+        
+        // Extrai duração baseado no formato da resposta
+        let timeToDestination = 0;
+        if (dataToDestination.features && dataToDestination.features.length > 0) {
+          // Formato GeoJSON
+          timeToDestination = dataToDestination.features[0].properties.summary.duration;
+        } else if (dataToDestination.routes && dataToDestination.routes.length > 0) {
+          // Formato routes
+          timeToDestination = dataToDestination.routes[0].summary.duration;
+        }
+
+        // Calcula o tempo total da viagem em minutos.
+        const totalTime = (timeToUser + timeToDestination) / 60;
+        // Calcula um preço estimado com base no tempo total.
+        const price = (totalTime * 0.5).toFixed(2);
+
+        // Retorna o marcador com as informações de tempo e preço adicionadas.
+        return { ...marker, time: totalTime, price };
+      } catch (error) {
+        console.error(`Erro ao calcular tempo para o motorista ${marker.id}:`, error);
+        // Retorna o marcador sem tempo/preço em caso de erro
+        return { ...marker, time: 0, price: "0.00" };
       }
-      const dataToDestination = await responseToDestination.json();
-      const timeToDestination = dataToDestination.routes[0].summary.duration;
-
-      // Calcula o tempo total da viagem em minutos.
-      const totalTime = (timeToUser + timeToDestination) / 60;
-      // Calcula um preço estimado com base no tempo total.
-      const price = (totalTime * 0.5).toFixed(2);
-
-      // Retorna o marcador com as informações de tempo e preço adicionadas.
-      return { ...marker, time: totalTime, price };
     });
 
     // Aguarda que todas as promessas de cálculo de rota sejam resolvidas.
     return await Promise.all(timesPromises);
   } catch (error) {
     console.error("Error calculating driver times:", error);
-    // Em caso de erro, você pode querer retornar um array vazio ou relançar o erro
-    // para que o código chamador possa lidar com a falha de forma mais específica.
     return [];
   }
 };
+
+export { fetchWithApiKeyFallback };
+

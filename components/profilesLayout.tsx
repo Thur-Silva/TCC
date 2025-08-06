@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import InfoCard from 'components/infoCard'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
+import LottieView from 'lottie-react-native'
 import { useState } from 'react'
 import { Alert, Image, Modal, Pressable, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import ErrorModal from './ErrorModal'
@@ -50,6 +51,7 @@ export default function ProfileLayout({
   const [showErrorModal, setShowErrorModal] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [showGenderModal, setShowGenderModal] = useState(false)
+  const conquistas = false
 
   const originalData = {
     name: userName || '',
@@ -458,20 +460,21 @@ export default function ProfileLayout({
             <Text className="text-2xl font-JakartaBold mb-4 text-[#1456a7]">Estatísticas e Conquistas</Text>
             <View className="flex-row justify-between mb-6">
               <View className="items-center p-4 rounded-xl bg-[#eef5ff] shadow-sm flex-1 mx-1">
-                <Text className="font-JakartaBold text-xl text-[#1456a7]">128</Text>
+                <Text className="font-JakartaBold text-xl text-[#1456a7]">0</Text>
                 <Text className="text-gray-500 mt-1">Corridas</Text>
               </View>
               <View className="items-center p-4 rounded-xl bg-[#eef5ff] shadow-sm flex-1 mx-1">
-                <Text className="font-JakartaBold text-xl text-[#1456a7]">4.8</Text>
+                <Text className="font-JakartaBold text-xl text-[#1456a7]">5</Text>
                 <Text className="text-gray-500 mt-1">Avaliação</Text>
               </View>
               <View className="items-center p-4 rounded-xl bg-[#eef5ff] shadow-sm flex-1 mx-1">
-                <Text className="font-JakartaBold text-xl text-[#1456a7]">3</Text>
+                <Text className="font-JakartaBold text-xl text-[#1456a7]">0</Text>
                 <Text className="text-gray-500 mt-1">Anos Ativo</Text>
               </View>
             </View>
             <Text className="text-lg font-JakartaBold mb-2 text-[#1456a7]">Conquistas</Text>
-            <View className="flex-row flex-wrap">
+              {conquistas ? (
+              <View className="flex-row flex-wrap">
               <View className="bg-[#4598ff] rounded-full px-4 py-2 m-1">
                 <Text className="text-white font-JakartaMedium">⭐ Motorista 5 Estrelas</Text>
               </View>
@@ -479,7 +482,25 @@ export default function ProfileLayout({
                 <Text className="text-white font-JakartaMedium">🚘 100+ Corridas</Text>
               </View>
             </View>
+              ):( 
+                          <View className="items-center mt-4 mb-0">
+                            <LottieView
+                              source={require('@/assets/animations/empty.json')}
+                              autoPlay
+                              loop
+                              speed={0.8}
+                              style={{ width: 650, height: 250 }}
+                              resizeMode="contain"
+                            />
+
+                            <Text className="text-2xl font-JakartaExtraBold text-[#1456a7] mt-5 mb-5">Ainda não tem? </Text>
+                            <Text className="text-lg font-Jakarta px-0 text-[#1456a7] mb-5">Execute tarefas dentro do app para desbloquar conquistas. </Text>
+                          </View>
+                          
+              )}
+
           </View>
+           
         )}
 
         {/* Campos visíveis apenas no perfil público */}

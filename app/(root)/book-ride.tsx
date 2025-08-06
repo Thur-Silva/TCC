@@ -48,7 +48,7 @@ const BookRide = () => {
     };
 
     return (
-        <RideLayout title="Confirme sua corrida">
+        <RideLayout title="Confirme sua corrida" snapPoints={['45%', '85%']}>
             <>
                 {/* Informações do Motorista */}
                 <View className="flex flex-col items-center justify-center my-4">
@@ -91,7 +91,7 @@ const BookRide = () => {
                 </View>
 
                 {/* Seção da Rota com design melhorado */}
-                <View className="flex-col w-full mt-8">
+                <View className="flex-col w-full mt-6">
                     <Text className="text-lg font-JakartaSemiBold text-[#1456a7] mb-4">Sua Rota</Text>
                     <View className="flex-row items-start border-l-2 border-dashed border-gray-400 pl-4 relative">
                         <View className="absolute left-[-12] top-[-5]">
@@ -111,11 +111,21 @@ const BookRide = () => {
                     </View>
                 </View>
 
+                {/* Indicador Visual da Rota no Mapa */}
+                <View className="flex-row items-center justify-center mt-4 mb-2">
+                    <View className="flex-row items-center bg-blue-50 px-3 py-2 rounded-full">
+                        <Ionicons name="navigate" size={16} color="#4598ff" />
+                        <Text className="text-sm font-JakartaMedium text-[#4598ff] ml-2">
+                            Rota visualizada no mapa acima
+                        </Text>
+                    </View>
+                </View>
+
                 {/* Botão de Confirmação Ousado */}
                 <CustomButton
                     title="Confirmar Corrida"
                     onPress={handleConfirmBooking}
-                    className="mt-8 bg-[#1456a7] shadow-lg"
+                    className="mt-6 bg-[#1456a7] shadow-lg"
                     textClassName="font-JakartaExtraBold text-lg"
                 />
             </>

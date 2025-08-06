@@ -241,12 +241,6 @@ export default function ConfigScreen() {
                     value={syncMessages}
                     onValueChange={setSyncMessages}
                 />
-       
-               <ConfigItem
-                    label="Limpar Cache de Chats"
-                    onPress={handleClearChatCache}
-                    iconName="chatbox-ellipses-outline"
-                />
           
 
                 <Text className="text-2xl font-JakartaBold mt-8 mb-4 text-[#1456a7]">
@@ -312,6 +306,7 @@ export default function ConfigScreen() {
                 firstButtonText="Sair"
                 onFirstButtonPress={confirmLogout}
                 secondOption
+                onSecondButtonPress={() => setShowLogoutModal(false)}
             />
             <ErrorModal
                 isErrorVisible={showClearCacheModal}
@@ -321,6 +316,8 @@ export default function ConfigScreen() {
                 firstButtonText="Limpar Cache"
                 onFirstButtonPress={confirmClearCache}
                 secondOption
+                onSecondButtonPress={() => setShowClearCacheModal(false)}
+
             />
             <ErrorModal
                 isErrorVisible={showDriverModeModal}
@@ -333,6 +330,7 @@ export default function ConfigScreen() {
                 onSecondButtonPress={() => setShowDriverModeModal(false)}
                 secondOption
                 icon={icons.question}
+                
             />
         </SafeAreaView>
     );

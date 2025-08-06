@@ -101,6 +101,7 @@ const Profile = () => {
         <HomeHeader showInput={false} globalClassName="py-10"/>
       </View>
       
+      
       <ProfileLayout
         userName={userName}
         userEmail={userEmail}
